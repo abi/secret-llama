@@ -2,6 +2,7 @@ import { useState } from "react";
 import * as webllm from "@mlc-ai/web-llm";
 import { Input } from "@/components/ui/input";
 import { Button } from "./components/ui/button";
+import { FaArrowUp } from "react-icons/fa6";
 
 const appConfig = webllm.prebuiltAppConfig;
 // CHANGE THIS TO SEE EFFECTS OF BOTH, CODE BELOW DO NOT NEED TO CHANGE
@@ -50,6 +51,7 @@ function App() {
       content: userInput,
     };
     setChatHistory((history) => [...history, userMessage]);
+    setUserInput("");
 
     const reply0 = await loadedEngine.chat.completions.create({
       messages: [...chatHistory, userMessage],
@@ -92,17 +94,25 @@ function App() {
             </p>
           </div>
         ))}
-        <Input
-          placeholder="Enter message"
-          onChange={(e) => setUserInput(e.target.value)}
-          value={userInput}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              send();
-            }
-          }}
-        />
-        <Button onClick={send}>Send</Button>
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white max-w-3xl mx-auto">
+          <div className="flex items-center p-2 bg-white border rounded-xl shadow-sm">
+            <Input
+              className="flex-1 border-none shadow-none focus:ring-0 
+              ring-0 focus:border-0 focus-visible:ring-0 text-base"
+              placeholder="Message Llama"
+              onChange={(e) => setUserInput(e.target.value)}
+              value={userInput}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  send();
+                }
+              }}
+            />
+            <Button className="p-2" variant="ghost" onClick={send}>
+              <FaArrowUp className="h-5 w-5 text-gray-500" />
+            </Button>
+          </div>
+        </div>
       </div>
     </>
   );
