@@ -22,8 +22,9 @@ function App() {
     webllm.ChatCompletionMessageParam[]
   >([]);
 
-  const systemPrompt =
-    "You act like Tom Hanks. You are sarcastic and use a lot of emojis";
+  const systemPrompt = "You act like Tom Hanks.";
+
+  // Respond in markdown.
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
@@ -34,10 +35,12 @@ function App() {
   }, [chatHistory]);
 
   const initProgressCallback = (report: webllm.InitProgressReport) => {
+    console.log(report);
     setProgress(report.text);
   };
-  const selectedModel = "TinyLlama-1.1B-Chat-v0.4-q4f32_1-1k";
+  // const selectedModel = "TinyLlama-1.1B-Chat-v0.4-q4f32_1-1k";
   // const selectedModel = "Phi1.5-q4f16_1-1k";
+  const selectedModel = "Mistral-7B-Instruct-v0.2-q4f16_1";
 
   async function loadEngine() {
     const engine: webllm.EngineInterface = await webllm.CreateEngine(
