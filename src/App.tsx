@@ -16,7 +16,8 @@ if (appConfig.useIndexedDBCache) {
 function App() {
   const [engine, setEngine] = useState<webllm.EngineInterface | null>(null);
   const [progress, setProgress] = useState("Initializing...");
-  const [userInput, setUserInput] = useState("");
+  const [userInput, setUserInput] = useState("Where's pittsburgh?");
+  const [assistantMessage, setAssistantMessage] = useState("");
 
   const initProgressCallback = (report: webllm.InitProgressReport) => {
     setProgress(report.text);
@@ -29,20 +30,31 @@ function App() {
       /*engineConfig=*/ { initProgressCallback: initProgressCallback }
     );
     setEngine(engine);
+    return engine;
   }
 
   async function send() {
-    if (!engine) {
+    let loadedEngine = engine;
+
+    // Start up the engine first
+    if (!loadedEngine) {
       console.log("Engine not loaded");
+      loadedEngine = await loadEngine();
+    }
+
+    const reply0 = await loadedEngine.chat.completions.create({
+      messages: [{ role: "user", content: userInput }],
+    });
+    const response = reply0.choices[0].message.content;
+    if (!response) {
+      console.error("No response");
       return;
     }
 
-    const reply0 = await engine.chat.completions.create({
-      messages: [{ role: "user", content: userInput }],
-    });
+    setAssistantMessage(response);
     console.log(reply0);
-    console.log(reply0.choices[0].message.content);
-    console.log(await engine.runtimeStatsText());
+    console.log(response);
+    console.log(await loadedEngine.runtimeStatsText());
   }
 
   return (
@@ -50,10 +62,18 @@ function App() {
       <div className="max-w-lg mx-auto">
         <div>{progress}</div>
         <button onClick={loadEngine}>Load model</button>
+        <div className="bg-gray-100 p-4 rounded-lg shadow">
+          <p className="text-gray-700">{assistantMessage}</p>
+        </div>
         <Input
           placeholder="Enter message"
           onChange={(e) => setUserInput(e.target.value)}
           value={userInput}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              send();
+            }
+          }}
         />
         <Button onClick={send}>Send</Button>
       </div>
