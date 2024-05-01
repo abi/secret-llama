@@ -80,11 +80,11 @@ function App() {
       <div className="max-w-3xl mx-auto flex flex-col h-screen">
         <div className="p-2 text-xs">{progress}</div>
         <div className="flex-1 overflow-auto">
-          <div className="max-w-2xl mx-auto text-base">
+          <div className="max-w-3xl mx-auto text-base px-5">
             {chatHistory.map((message, index) => (
               <div key={index} className="p-4 rounded-lg mt-2">
                 <div className="flex items-center gap-x-2">
-                  <div className="border p-1 rounded-full">
+                  <div className="border p-1 rounded-full text-gray-500">
                     {message.role === "assistant" ? (
                       <FaHorseHead />
                     ) : (
