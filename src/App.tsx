@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as webllm from "@mlc-ai/web-llm";
 import { Input } from "@/components/ui/input";
 import { Button } from "./components/ui/button";
@@ -18,10 +18,17 @@ function App() {
   const [engine, setEngine] = useState<webllm.EngineInterface | null>(null);
   const [progress, setProgress] = useState("Initializing...");
   const [userInput, setUserInput] = useState("Where's pittsburgh?");
-
   const [chatHistory, setChatHistory] = useState<
     webllm.ChatCompletionMessageParam[]
   >([]);
+
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [chatHistory]);
 
   const initProgressCallback = (report: webllm.InitProgressReport) => {
     setProgress(report.text);
@@ -100,7 +107,9 @@ function App() {
     <>
       <div className="max-w-3xl mx-auto flex flex-col h-screen">
         <div className="p-2 text-xs">{progress}</div>
-        <div className="flex-1 overflow-auto">
+
+        {/* List of messages */}
+        <div className="flex-1 overflow-auto" ref={scrollRef}>
           <div className="max-w-3xl mx-auto text-base px-5">
             {chatHistory.map((message, index) => (
               <div key={index} className="p-4 rounded-lg mt-2">
@@ -125,6 +134,8 @@ function App() {
             ))}
           </div>
         </div>
+
+        {/* User input footer */}
         <div className="p-4 bg-white">
           <div className="flex items-center p-2 bg-white border rounded-xl shadow-sm">
             <Input
