@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import * as webllm from "@mlc-ai/web-llm";
 import { Input } from "@/components/ui/input";
 import { Button } from "./components/ui/button";
-import { FaArrowUp } from "react-icons/fa6";
+import { FaArrowUp, FaHorseHead, FaPerson } from "react-icons/fa6";
 
 const appConfig = webllm.prebuiltAppConfig;
 // CHANGE THIS TO SEE EFFECTS OF BOTH, CODE BELOW DO NOT NEED TO CHANGE
@@ -78,26 +78,30 @@ function App() {
   return (
     <>
       <div className="max-w-3xl mx-auto">
-        <div>{progress}</div>
-        <button onClick={loadEngine}>Load model</button>
-        {chatHistory.map((message, index) => (
-          <div
-            key={index}
-            className={`p-4 rounded-lg shadow ${
-              message.role === "user" ? "bg-blue-100" : "bg-gray-100"
-            }`}
-          >
-            <p
-              className={`text-gray-700 ${
-                message.role === "user" ? "text-right" : ""
-              }`}
-            >
-              {typeof message.content === "string"
-                ? message.content
-                : "No content found"}
-            </p>
-          </div>
-        ))}
+        <div className="p-2 text-xs">{progress}</div>
+        <div className="max-w-2xl mx-auto text-base">
+          {chatHistory.map((message, index) => (
+            <div key={index} className="p-4 rounded-lg mt-2">
+              <div className="flex items-center gap-x-2">
+                <div className="border p-1 rounded-full">
+                  {message.role === "assistant" ? (
+                    <FaHorseHead />
+                  ) : (
+                    <FaPerson />
+                  )}
+                </div>
+                <div className="font-bold">
+                  {message.role === "assistant" ? "Llama" : "You"}
+                </div>
+              </div>
+              <p className="text-gray-700 pl-8 mt-2 leading-[1.75]">
+                {typeof message.content === "string"
+                  ? message.content
+                  : "No content found"}
+              </p>
+            </div>
+          ))}
+        </div>
         <div className="fixed bottom-0 left-0 right-0 p-4 bg-white max-w-3xl mx-auto">
           <div className="flex items-center p-2 bg-white border rounded-xl shadow-sm">
             <Input
