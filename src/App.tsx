@@ -77,32 +77,34 @@ function App() {
 
   return (
     <>
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-3xl mx-auto flex flex-col h-screen">
         <div className="p-2 text-xs">{progress}</div>
-        <div className="max-w-2xl mx-auto text-base">
-          {chatHistory.map((message, index) => (
-            <div key={index} className="p-4 rounded-lg mt-2">
-              <div className="flex items-center gap-x-2">
-                <div className="border p-1 rounded-full">
-                  {message.role === "assistant" ? (
-                    <FaHorseHead />
-                  ) : (
-                    <FaPerson />
-                  )}
+        <div className="flex-1 overflow-auto">
+          <div className="max-w-2xl mx-auto text-base">
+            {chatHistory.map((message, index) => (
+              <div key={index} className="p-4 rounded-lg mt-2">
+                <div className="flex items-center gap-x-2">
+                  <div className="border p-1 rounded-full">
+                    {message.role === "assistant" ? (
+                      <FaHorseHead />
+                    ) : (
+                      <FaPerson />
+                    )}
+                  </div>
+                  <div className="font-bold">
+                    {message.role === "assistant" ? "Llama" : "You"}
+                  </div>
                 </div>
-                <div className="font-bold">
-                  {message.role === "assistant" ? "Llama" : "You"}
-                </div>
+                <p className="text-gray-700 pl-8 mt-2 leading-[1.75]">
+                  {typeof message.content === "string"
+                    ? message.content
+                    : "No content found"}
+                </p>
               </div>
-              <p className="text-gray-700 pl-8 mt-2 leading-[1.75]">
-                {typeof message.content === "string"
-                  ? message.content
-                  : "No content found"}
-              </p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white max-w-3xl mx-auto">
+        <div className="p-4 bg-white">
           <div className="flex items-center p-2 bg-white border rounded-xl shadow-sm">
             <Input
               className="flex-1 border-none shadow-none focus:ring-0 
