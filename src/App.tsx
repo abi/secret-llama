@@ -17,7 +17,10 @@ function App() {
   const [engine, setEngine] = useState<webllm.EngineInterface | null>(null);
   const [progress, setProgress] = useState("Initializing...");
   const [userInput, setUserInput] = useState("Where's pittsburgh?");
-  const [assistantMessage, setAssistantMessage] = useState("");
+
+  const [chatHistory, setChatHistory] = useState<
+    webllm.ChatCompletionMessageParam[]
+  >([]);
 
   const initProgressCallback = (report: webllm.InitProgressReport) => {
     setProgress(report.text);
@@ -42,16 +45,25 @@ function App() {
       loadedEngine = await loadEngine();
     }
 
+    const userMessage: webllm.ChatCompletionMessageParam = {
+      role: "user",
+      content: userInput,
+    };
+    setChatHistory((history) => [...history, userMessage]);
+
     const reply0 = await loadedEngine.chat.completions.create({
-      messages: [{ role: "user", content: userInput }],
+      messages: [...chatHistory, userMessage],
     });
+
+    const assistantMessage = reply0.choices[0].message;
     const response = reply0.choices[0].message.content;
     if (!response) {
       console.error("No response");
       return;
     }
 
-    setAssistantMessage(response);
+    setChatHistory((history) => [...history, assistantMessage]);
+
     console.log(reply0);
     console.log(response);
     console.log(await loadedEngine.runtimeStatsText());
@@ -62,9 +74,24 @@ function App() {
       <div className="max-w-lg mx-auto">
         <div>{progress}</div>
         <button onClick={loadEngine}>Load model</button>
-        <div className="bg-gray-100 p-4 rounded-lg shadow">
-          <p className="text-gray-700">{assistantMessage}</p>
-        </div>
+        {chatHistory.map((message, index) => (
+          <div
+            key={index}
+            className={`p-4 rounded-lg shadow ${
+              message.role === "user" ? "bg-blue-100" : "bg-gray-100"
+            }`}
+          >
+            <p
+              className={`text-gray-700 ${
+                message.role === "user" ? "text-right" : ""
+              }`}
+            >
+              {typeof message.content === "string"
+                ? message.content
+                : "No content found"}
+            </p>
+          </div>
+        ))}
         <Input
           placeholder="Enter message"
           onChange={(e) => setUserInput(e.target.value)}
