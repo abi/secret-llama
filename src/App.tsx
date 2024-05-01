@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as webllm from "@mlc-ai/web-llm";
 import { Input } from "@/components/ui/input";
 import { Button } from "./components/ui/button";
@@ -71,9 +71,13 @@ function App() {
     console.log(await loadedEngine.runtimeStatsText());
   }
 
+  useEffect(() => {
+    loadEngine();
+  }, []);
+
   return (
     <>
-      <div className="max-w-lg mx-auto">
+      <div className="max-w-3xl mx-auto">
         <div>{progress}</div>
         <button onClick={loadEngine}>Load model</button>
         {chatHistory.map((message, index) => (
