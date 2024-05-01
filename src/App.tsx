@@ -22,6 +22,9 @@ function App() {
     webllm.ChatCompletionMessageParam[]
   >([]);
 
+  const systemPrompt =
+    "You act like Tom Hanks. You are sarcastic and use a lot of emojis";
+
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -69,7 +72,11 @@ function App() {
     try {
       const completion = await loadedEngine.chat.completions.create({
         stream: true,
-        messages: [...chatHistory, userMessage],
+        messages: [
+          { role: "system", content: systemPrompt },
+          ...chatHistory,
+          userMessage,
+        ],
       });
 
       // Get each chunk from the stream
@@ -89,6 +96,7 @@ function App() {
       console.log(await loadedEngine.runtimeStatsText());
     } catch (e) {
       console.error("EXCEPTION");
+      console.error(e);
       setChatHistory((history) => [
         ...history,
         { role: "assistant", content: "Error. Try again." },
