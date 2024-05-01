@@ -27,6 +27,7 @@ function App() {
     setProgress(report.text);
   };
   const selectedModel = "TinyLlama-1.1B-Chat-v0.4-q4f32_1-1k";
+  // const selectedModel = "Phi1.5-q4f16_1-1k";
 
   async function loadEngine() {
     const engine: webllm.EngineInterface = await webllm.CreateEngine(
@@ -72,7 +73,9 @@ function App() {
   }
 
   useEffect(() => {
-    loadEngine();
+    if (!engine) {
+      loadEngine();
+    }
   }, []);
 
   return (
