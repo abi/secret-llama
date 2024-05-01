@@ -54,22 +54,40 @@ function App() {
     setChatHistory((history) => [...history, userMessage]);
     setUserInput("");
 
-    const reply0 = await loadedEngine.chat.completions.create({
-      messages: [...chatHistory, userMessage],
-    });
+    setChatHistory((history) => [
+      ...history,
+      { role: "assistant", content: "" },
+    ]);
 
-    const assistantMessage = reply0.choices[0].message;
-    const response = reply0.choices[0].message.content;
-    if (!response) {
-      console.error("No response");
+    try {
+      const completion = await loadedEngine.chat.completions.create({
+        stream: true,
+        messages: [...chatHistory, userMessage],
+      });
+
+      // Get each chunk from the stream
+      let assistantMessage = "";
+      for await (const chunk of completion) {
+        const curDelta = chunk.choices[0].delta.content;
+        if (curDelta) {
+          assistantMessage += curDelta;
+          // Update the last message
+          setChatHistory((history) => [
+            ...history.slice(0, -1),
+            { role: "assistant", content: assistantMessage },
+          ]);
+        }
+      }
+
+      console.log(await loadedEngine.runtimeStatsText());
+    } catch (e) {
+      console.error("EXCEPTION");
+      setChatHistory((history) => [
+        ...history,
+        { role: "assistant", content: "Error. Try again." },
+      ]);
       return;
     }
-
-    setChatHistory((history) => [...history, assistantMessage]);
-
-    console.log(reply0);
-    console.log(response);
-    console.log(await loadedEngine.runtimeStatsText());
   }
 
   useEffect(() => {
