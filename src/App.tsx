@@ -55,7 +55,10 @@ function App() {
   async function loadEngine() {
     const engine: webllm.EngineInterface = await webllm.CreateEngine(
       selectedModel,
-      /*engineConfig=*/ { initProgressCallback: initProgressCallback }
+      /*engineConfig=*/ {
+        initProgressCallback: initProgressCallback,
+        appConfig: appConfig,
+      }
     );
     setEngine(engine);
     return engine;
