@@ -14,6 +14,13 @@ if (appConfig.useIndexedDBCache) {
   console.log("Using Cache API");
 }
 
+const MODELS = [
+  "Mistral-7B-Instruct-v0.2-q4f16_1",
+  "Llama-3-8B-Instruct-q4f16_1",
+  "TinyLlama-1.1B-Chat-v0.4-q4f32_1-1k",
+  "Phi1.5-q4f16_1-1k",
+];
+
 function App() {
   const [engine, setEngine] = useState<webllm.EngineInterface | null>(null);
   const [progress, setProgress] = useState("Initializing...");
@@ -22,6 +29,9 @@ function App() {
     webllm.ChatCompletionMessageParam[]
   >([]);
 
+  const [modelsState, setModelsState] = useState<{ [key: string]: boolean }>(
+    {}
+  );
   const systemPrompt = "You act like Tom Hanks.";
 
   // Respond in markdown.
@@ -35,12 +45,12 @@ function App() {
   }, [chatHistory]);
 
   const initProgressCallback = (report: webllm.InitProgressReport) => {
-    console.log(report);
+    // console.log(report);
     setProgress(report.text);
   };
-  // const selectedModel = "TinyLlama-1.1B-Chat-v0.4-q4f32_1-1k";
+  const selectedModel = "TinyLlama-1.1B-Chat-v0.4-q4f32_1-1k";
   // const selectedModel = "Phi1.5-q4f16_1-1k";
-  const selectedModel = "Mistral-7B-Instruct-v0.2-q4f16_1";
+  // const selectedModel = "Mistral-7B-Instruct-v0.2-q4f16_1";
 
   async function loadEngine() {
     const engine: webllm.EngineInterface = await webllm.CreateEngine(
@@ -114,11 +124,43 @@ function App() {
     }
   }, []);
 
+  async function updateModelStatus() {
+    console.log("Checking model status");
+    MODELS.forEach(async (model) => {
+      const isInCache = await webllm.hasModelInCache(model, appConfig);
+      console.log(`${model} in cache: ${isInCache}`);
+      setModelsState((prev) => ({
+        ...prev,
+        [model]: isInCache,
+      }));
+    });
+  }
+
+  useEffect(() => {
+    if (engine) {
+      updateModelStatus();
+    }
+  }, [engine]);
+
   return (
     <>
       <div className="max-w-3xl mx-auto flex flex-col h-screen">
         <div className="p-2 text-xs">{progress}</div>
 
+        <div className="p-2 text-xs text-center font-bold">
+          {MODELS.map((model, index) => (
+            <>
+              <div key={index}>{model}</div>
+              <span
+                className={`ml-2 ${
+                  modelsState[model] ? "text-green-500" : "text-red-500"
+                }`}
+              >
+                {modelsState[model] ? "Cached" : "Not Cached"}
+              </span>
+            </>
+          ))}
+        </div>
         {/* List of messages */}
         <div className="flex-1 overflow-auto" ref={scrollRef}>
           <div className="max-w-3xl mx-auto text-base px-5">
