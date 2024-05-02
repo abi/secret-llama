@@ -19,10 +19,12 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.2.0",
+    "react-markdown": "^9.0.1",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.13",
     "@types/node": "^20.12.7",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",

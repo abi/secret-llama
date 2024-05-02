@@ -3,6 +3,7 @@ import * as webllm from "@mlc-ai/web-llm";
 import { Input } from "@/components/ui/input";
 import { Button } from "./components/ui/button";
 import { FaArrowUp, FaHorseHead, FaPerson } from "react-icons/fa6";
+import Markdown from "react-markdown";
 
 const appConfig = webllm.prebuiltAppConfig;
 // CHANGE THIS TO SEE EFFECTS OF BOTH, CODE BELOW DO NOT NEED TO CHANGE
@@ -155,7 +156,7 @@ function App() {
       <div className="max-w-3xl mx-auto flex flex-col h-screen">
         <div className="p-2 text-xs">{progress}</div>
 
-        <div className="p-2 text-xs text-center font-bold">
+        <div className="p-2 text-xs text-center font-bold hidden">
           {MODELS.map((model, index) => (
             <div key={index}>
               <div>{model}</div>
@@ -186,11 +187,11 @@ function App() {
                     {message.role === "assistant" ? "Llama" : "You"}
                   </div>
                 </div>
-                <p className="text-gray-700 pl-8 mt-2 leading-[1.75]">
+                <Markdown className="text-gray-700 pl-8 mt-2 leading-[1.75] prose">
                   {typeof message.content === "string"
                     ? message.content
                     : "No content found"}
-                </p>
+                </Markdown>
               </div>
             ))}
           </div>
