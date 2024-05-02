@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import * as webllm from "@mlc-ai/web-llm";
 import UserInput from "./components/UserInput";
 import useChatStore from "./hooks/useChatStore";
 import ResetChatButton from "./components/ResetChatButton";
 import DebugUI from "./components/DebugUI";
 import ModelsDropdown from "./components/ModelsDropdown";
-import Message from "./components/Message";
+import MessageList from "./components/MessageList";
 
 const appConfig = webllm.prebuiltAppConfig;
 // CHANGE THIS TO SEE EFFECTS OF BOTH, CODE BELOW DO NOT NEED TO CHANGE
@@ -20,26 +20,17 @@ if (appConfig.useIndexedDBCache) {
 function App() {
   const [engine, setEngine] = useState<webllm.EngineInterface | null>(null);
   const [progress, setProgress] = useState("Not loaded");
-  const [chatHistory, setChatHistory] = useState<
-    webllm.ChatCompletionMessageParam[]
-  >([]);
 
   // Store
   const userInput = useChatStore((state) => state.userInput);
   const setUserInput = useChatStore((state) => state.setUserInput);
   const selectedModel = useChatStore((state) => state.selectedModel);
   const setIsGenerating = useChatStore((state) => state.setIsGenerating);
+  const chatHistory = useChatStore((state) => state.chatHistory);
+  const setChatHistory = useChatStore((state) => state.setChatHistory);
 
   const systemPrompt = "You are a very helpful assistant.";
   // Respond in markdown.
-
-  const scrollRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [chatHistory]);
 
   const initProgressCallback = (report: webllm.InitProgressReport) => {
     // console.log(report);
@@ -137,8 +128,8 @@ function App() {
       return;
     }
     await engine.resetChat();
-    // setUserInput("");
-    setChatHistory([]);
+    setUserInput("");
+    setChatHistory(() => []);
     console.log("reset complete");
   }
 
@@ -163,16 +154,7 @@ function App() {
       </div>
 
       <div className="max-w-3xl mx-auto flex flex-col h-screen">
-        {/* MessageList */}
-        <div className="flex-1 overflow-auto" ref={scrollRef}>
-          <div className="max-w-3xl mx-auto text-base px-5">
-            {chatHistory.map((message, index) => (
-              <Message key={index} message={message} />
-            ))}
-          </div>
-        </div>
-
-        {/* User input footer */}
+        <MessageList />
         <UserInput onSend={onSend} onStop={onStop} />
       </div>
     </div>

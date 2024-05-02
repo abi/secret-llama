@@ -1,3 +1,4 @@
+import * as webllm from "@mlc-ai/web-llm";
 import { create } from "zustand";
 
 interface State {
@@ -11,6 +12,14 @@ interface State {
   // Inference state
   isGenerating: boolean;
   setIsGenerating: (isGenerating: boolean) => void;
+
+  // Chat history
+  chatHistory: webllm.ChatCompletionMessageParam[];
+  setChatHistory: (
+    fn: (
+      chatHistory: webllm.ChatCompletionMessageParam[]
+    ) => webllm.ChatCompletionMessageParam[]
+  ) => void;
 }
 
 const useChatStore = create<State>((set) => ({
@@ -26,6 +35,13 @@ const useChatStore = create<State>((set) => ({
   // Inference state
   isGenerating: false,
   setIsGenerating: (isGenerating: boolean) => set({ isGenerating }),
+
+  // Chat history
+  chatHistory: [],
+  setChatHistory: (fn) =>
+    set((state) => ({
+      chatHistory: fn(state.chatHistory),
+    })),
 }));
 
 export default useChatStore;
