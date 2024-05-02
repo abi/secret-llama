@@ -12,6 +12,7 @@ function UserInput({
 }) {
   const userInput = useChatStore((state) => state.userInput);
   const setUserInput = useChatStore((state) => state.setUserInput);
+  const selectedModel = useChatStore((state) => state.selectedModel);
 
   return (
     <div className="p-4">
@@ -19,7 +20,7 @@ function UserInput({
         <Input
           className="flex-1 border-none shadow-none focus:ring-0 
               ring-0 focus:border-0 focus-visible:ring-0 text-base"
-          placeholder="Message Llama"
+          placeholder={`Message ${selectedModel}`}
           onChange={(e) => setUserInput(e.target.value)}
           value={userInput}
           onKeyDown={(e) => {

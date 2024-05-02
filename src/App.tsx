@@ -37,6 +37,7 @@ function App() {
   // Store
   const userInput = useChatStore((state) => state.userInput);
   const setUserInput = useChatStore((state) => state.setUserInput);
+  const selectedModel = useChatStore((state) => state.selectedModel);
 
   const systemPrompt = "You are a very helpful assistant.";
 
@@ -54,10 +55,6 @@ function App() {
     // console.log(report);
     setProgress(report.text);
   };
-
-  // const selectedModel = "TinyLlama-1.1B-Chat-v0.4-q4f32_1-1k";
-  // const selectedModel = "Phi1.5-q4f16_1-1k";
-  const selectedModel = "Mistral-7B-Instruct-v0.2-q4f16_1";
 
   async function loadEngine() {
     console.log("Loading engine");
