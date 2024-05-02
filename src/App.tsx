@@ -24,7 +24,7 @@ const MODELS = [
 
 function App() {
   const [engine, setEngine] = useState<webllm.EngineInterface | null>(null);
-  const [progress, setProgress] = useState("Initializing...");
+  const [progress, setProgress] = useState("Not loaded");
   const [userInput, setUserInput] = useState("Where's pittsburgh?");
   const [chatHistory, setChatHistory] = useState<
     webllm.ChatCompletionMessageParam[]
@@ -145,7 +145,25 @@ function App() {
     });
   }
 
-  async function resetChat() {}
+  async function resetChat() {
+    if (!engine) {
+      console.error("Engine not loaded");
+      return;
+    }
+    await engine.resetChat();
+    setUserInput("");
+    setChatHistory([]);
+    console.log("reset complete");
+  }
+
+  async function stop() {
+    if (!engine) {
+      console.error("Engine not loaded");
+      return;
+    }
+
+    engine.interruptGenerate();
+  }
 
   const IS_MODEL_STATUS_CHECK_ENABLED = false;
 
@@ -220,6 +238,7 @@ function App() {
               <FaArrowUp className="h-5 w-5 text-gray-500" />
             </Button>
             <Button onClick={resetChat}>New</Button>
+            <Button onClick={stop}>Stop</Button>
             <Button onClick={loadEngine}>Load</Button>
           </div>
         </div>
