@@ -48,12 +48,13 @@ function App() {
     // console.log(report);
     setProgress(report.text);
   };
-  const selectedModel = "TinyLlama-1.1B-Chat-v0.4-q4f32_1-1k";
+  // const selectedModel = "TinyLlama-1.1B-Chat-v0.4-q4f32_1-1k";
   // const selectedModel = "Phi1.5-q4f16_1-1k";
-  // const selectedModel = "Mistral-7B-Instruct-v0.2-q4f16_1";
+  const selectedModel = "Mistral-7B-Instruct-v0.2-q4f16_1";
 
   async function loadEngine() {
-    const engine: webllm.EngineInterface = await webllm.CreateEngine(
+    const engine: webllm.EngineInterface = await webllm.CreateWebWorkerEngine(
+      new Worker(new URL("./worker.ts", import.meta.url), { type: "module" }),
       selectedModel,
       /*engineConfig=*/ {
         initProgressCallback: initProgressCallback,
@@ -141,8 +142,10 @@ function App() {
     });
   }
 
+  const IS_MODEL_STATUS_CHECK_ENABLED = false;
+
   useEffect(() => {
-    if (engine) {
+    if (engine && IS_MODEL_STATUS_CHECK_ENABLED) {
       updateModelStatus();
     }
   }, [engine]);
@@ -154,8 +157,8 @@ function App() {
 
         <div className="p-2 text-xs text-center font-bold">
           {MODELS.map((model, index) => (
-            <>
-              <div key={index}>{model}</div>
+            <div key={index}>
+              <div>{model}</div>
               <span
                 className={`ml-2 ${
                   modelsState[model] ? "text-green-500" : "text-red-500"
@@ -163,7 +166,7 @@ function App() {
               >
                 {modelsState[model] ? "Cached" : "Not Cached"}
               </span>
-            </>
+            </div>
           ))}
         </div>
         {/* List of messages */}
