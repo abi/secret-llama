@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import * as webllm from "@mlc-ai/web-llm";
-import { Button } from "./components/ui/button";
 import { FaHorseHead, FaPerson } from "react-icons/fa6";
 import Markdown from "react-markdown";
 import UserInput from "./components/UserInput";
 import useChatStore from "./hooks/useChatStore";
 import ResetChatButton from "./components/ResetChatButton";
+import DebugUI from "./components/DebugUI";
+import ModelsDropdown from "./components/ModelsDropdown";
 
 const appConfig = webllm.prebuiltAppConfig;
 // CHANGE THIS TO SEE EFFECTS OF BOTH, CODE BELOW DO NOT NEED TO CHANGE
@@ -17,23 +18,12 @@ if (appConfig.useIndexedDBCache) {
   console.log("Using Cache API");
 }
 
-const MODELS = [
-  "Mistral-7B-Instruct-v0.2-q4f16_1",
-  "Llama-3-8B-Instruct-q4f16_1",
-  "TinyLlama-1.1B-Chat-v0.4-q4f32_1-1k",
-  "Phi1.5-q4f16_1-1k",
-];
-
 function App() {
   const [engine, setEngine] = useState<webllm.EngineInterface | null>(null);
   const [progress, setProgress] = useState("Not loaded");
   const [chatHistory, setChatHistory] = useState<
     webllm.ChatCompletionMessageParam[]
   >([]);
-
-  const [modelsState, setModelsState] = useState<{ [key: string]: boolean }>(
-    {}
-  );
 
   // Store
   const userInput = useChatStore((state) => state.userInput);
@@ -143,18 +133,6 @@ function App() {
   //   }
   // }, []);
 
-  async function updateModelStatus() {
-    console.log("Checking model status");
-    MODELS.forEach(async (model) => {
-      const isInCache = await webllm.hasModelInCache(model, appConfig);
-      console.log(`${model} in cache: ${isInCache}`);
-      setModelsState((prev) => ({
-        ...prev,
-        [model]: isInCache,
-      }));
-    });
-  }
-
   async function resetChat() {
     if (!engine) {
       console.error("Engine not loaded");
@@ -176,41 +154,17 @@ function App() {
     engine.interruptGenerate();
   }
 
-  const IS_MODEL_STATUS_CHECK_ENABLED = false;
-
-  useEffect(() => {
-    if (engine && IS_MODEL_STATUS_CHECK_ENABLED) {
-      updateModelStatus();
-    }
-  }, [engine]);
-
   return (
     <div className="px-4 w-full">
       <div className="absolute top-0 left-0 p-4 flex flex-col gap-2">
         <div>
           <ResetChatButton resetChat={resetChat} />
         </div>
-        <Button onClick={loadEngine} variant="outline">
-          Load
-        </Button>
-        <div className="p-2 text-xs max-w-[250px]">{progress}</div>
+        <DebugUI loadEngine={loadEngine} progress={progress} />
+        <ModelsDropdown />
       </div>
 
       <div className="max-w-3xl mx-auto flex flex-col h-screen">
-        <div className="p-2 text-xs text-center font-bold hidden">
-          {MODELS.map((model, index) => (
-            <div key={index}>
-              <div>{model}</div>
-              <span
-                className={`ml-2 ${
-                  modelsState[model] ? "text-green-500" : "text-red-500"
-                }`}
-              >
-                {modelsState[model] ? "Cached" : "Not Cached"}
-              </span>
-            </div>
-          ))}
-        </div>
         {/* MessageList */}
         <div className="flex-1 overflow-auto" ref={scrollRef}>
           <div className="max-w-3xl mx-auto text-base px-5">
