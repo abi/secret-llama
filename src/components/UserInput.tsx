@@ -13,6 +13,7 @@ function UserInput({
   const userInput = useChatStore((state) => state.userInput);
   const setUserInput = useChatStore((state) => state.setUserInput);
   const selectedModel = useChatStore((state) => state.selectedModel);
+  const isGenerating = useChatStore((state) => state.isGenerating);
 
   return (
     <div className="p-4">
@@ -29,10 +30,12 @@ function UserInput({
             }
           }}
         />
-        <Button className="p-2" variant="ghost" onClick={onSend}>
-          <FaArrowUp className="h-5 w-5 text-gray-500" />
-        </Button>
-        <Button onClick={onStop}>Stop</Button>
+        {!isGenerating && (
+          <Button className="p-2" variant="ghost" onClick={onSend}>
+            <FaArrowUp className="h-5 w-5 text-gray-500" />
+          </Button>
+        )}
+        {isGenerating && <Button onClick={onStop}>Stop</Button>}
       </div>
     </div>
   );

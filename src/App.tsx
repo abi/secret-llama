@@ -38,6 +38,7 @@ function App() {
   const userInput = useChatStore((state) => state.userInput);
   const setUserInput = useChatStore((state) => state.setUserInput);
   const selectedModel = useChatStore((state) => state.selectedModel);
+  const setIsGenerating = useChatStore((state) => state.setIsGenerating);
 
   const systemPrompt = "You are a very helpful assistant.";
 
@@ -72,6 +73,8 @@ function App() {
   }
 
   async function onSend() {
+    setIsGenerating(true);
+
     let loadedEngine = engine;
 
     // Start up the engine first
@@ -118,8 +121,11 @@ function App() {
         }
       }
 
+      setIsGenerating(false);
+
       console.log(await loadedEngine.runtimeStatsText());
     } catch (e) {
+      setIsGenerating(false);
       console.error("EXCEPTION");
       console.error(e);
       setChatHistory((history) => [
@@ -165,6 +171,7 @@ function App() {
       return;
     }
 
+    setIsGenerating(false);
     engine.interruptGenerate();
   }
 
