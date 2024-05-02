@@ -5,6 +5,7 @@ import { FaHorseHead, FaPerson } from "react-icons/fa6";
 import Markdown from "react-markdown";
 import UserInput from "./components/UserInput";
 import useChatStore from "./hooks/useChatStore";
+import ResetChatButton from "./components/ResetChatButton";
 
 const appConfig = webllm.prebuiltAppConfig;
 // CHANGE THIS TO SEE EFFECTS OF BOTH, CODE BELOW DO NOT NEED TO CHANGE
@@ -184,9 +185,18 @@ function App() {
   }, [engine]);
 
   return (
-    <>
+    <div className="px-4 w-full">
+      <div className="absolute top-0 left-0 p-4 flex flex-col gap-2">
+        <div>
+          <ResetChatButton resetChat={resetChat} />
+        </div>
+        <Button onClick={loadEngine} variant="outline">
+          Load
+        </Button>
+        <div className="p-2 text-xs max-w-[250px]">{progress}</div>
+      </div>
+
       <div className="max-w-3xl mx-auto flex flex-col h-screen">
-        <div className="p-2 text-xs">{progress}</div>
         <div className="p-2 text-xs text-center font-bold hidden">
           {MODELS.map((model, index) => (
             <div key={index}>
@@ -227,12 +237,11 @@ function App() {
             ))}
           </div>
         </div>
-        <Button onClick={resetChat}>New</Button>
-        <Button onClick={loadEngine}>Load</Button>
+
         {/* User input footer */}
         <UserInput onSend={onSend} onStop={onStop} />
       </div>
-    </>
+    </div>
   );
 }
 
