@@ -116,6 +116,7 @@ function App() {
     }
   }
 
+  // Load the engine on first render
   // useEffect(() => {
   //   if (!engine) {
   //     loadEngine();
