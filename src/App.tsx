@@ -54,6 +54,8 @@ function App() {
   const selectedModel = "Mistral-7B-Instruct-v0.2-q4f16_1";
 
   async function loadEngine() {
+    console.log("Loading engine");
+
     const engine: webllm.EngineInterface = await webllm.CreateWebWorkerEngine(
       new Worker(new URL("./worker.ts", import.meta.url), { type: "module" }),
       selectedModel,
@@ -125,11 +127,11 @@ function App() {
     }
   }
 
-  useEffect(() => {
-    if (!engine) {
-      loadEngine();
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!engine) {
+  //     loadEngine();
+  //   }
+  // }, []);
 
   async function updateModelStatus() {
     console.log("Checking model status");
@@ -142,6 +144,8 @@ function App() {
       }));
     });
   }
+
+  async function resetChat() {}
 
   const IS_MODEL_STATUS_CHECK_ENABLED = false;
 
@@ -215,6 +219,8 @@ function App() {
             <Button className="p-2" variant="ghost" onClick={send}>
               <FaArrowUp className="h-5 w-5 text-gray-500" />
             </Button>
+            <Button onClick={resetChat}>New</Button>
+            <Button onClick={loadEngine}>Load</Button>
           </div>
         </div>
       </div>
