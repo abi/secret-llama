@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import * as webllm from "@mlc-ai/web-llm";
-import { FaHorseHead, FaPerson } from "react-icons/fa6";
-import Markdown from "react-markdown";
 import UserInput from "./components/UserInput";
 import useChatStore from "./hooks/useChatStore";
 import ResetChatButton from "./components/ResetChatButton";
 import DebugUI from "./components/DebugUI";
 import ModelsDropdown from "./components/ModelsDropdown";
+import Message from "./components/Message";
 
 const appConfig = webllm.prebuiltAppConfig;
 // CHANGE THIS TO SEE EFFECTS OF BOTH, CODE BELOW DO NOT NEED TO CHANGE
@@ -32,7 +31,6 @@ function App() {
   const setIsGenerating = useChatStore((state) => state.setIsGenerating);
 
   const systemPrompt = "You are a very helpful assistant.";
-
   // Respond in markdown.
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -169,25 +167,7 @@ function App() {
         <div className="flex-1 overflow-auto" ref={scrollRef}>
           <div className="max-w-3xl mx-auto text-base px-5">
             {chatHistory.map((message, index) => (
-              <div key={index} className="p-4 rounded-lg mt-2">
-                <div className="flex items-center gap-x-2">
-                  <div className="border p-1 rounded-full text-gray-500">
-                    {message.role === "assistant" ? (
-                      <FaHorseHead />
-                    ) : (
-                      <FaPerson />
-                    )}
-                  </div>
-                  <div className="font-bold">
-                    {message.role === "assistant" ? "Llama" : "You"}
-                  </div>
-                </div>
-                <Markdown className="text-gray-700 pl-8 mt-2 leading-[1.75] prose">
-                  {typeof message.content === "string"
-                    ? message.content
-                    : "Non-string content found"}
-                </Markdown>
-              </div>
+              <Message key={index} message={message} />
             ))}
           </div>
         </div>
