@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import * as webllm from "@mlc-ai/web-llm";
-import { Input } from "@/components/ui/input";
 import { Button } from "./components/ui/button";
-import { FaArrowUp, FaHorseHead, FaPerson } from "react-icons/fa6";
+import { FaHorseHead, FaPerson } from "react-icons/fa6";
 import Markdown from "react-markdown";
+import UserInput from "./components/UserInput";
+import useChatStore from "./hooks/useChatStore";
 
 const appConfig = webllm.prebuiltAppConfig;
 // CHANGE THIS TO SEE EFFECTS OF BOTH, CODE BELOW DO NOT NEED TO CHANGE
@@ -25,7 +26,6 @@ const MODELS = [
 function App() {
   const [engine, setEngine] = useState<webllm.EngineInterface | null>(null);
   const [progress, setProgress] = useState("Not loaded");
-  const [userInput, setUserInput] = useState("Where's pittsburgh?");
   const [chatHistory, setChatHistory] = useState<
     webllm.ChatCompletionMessageParam[]
   >([]);
@@ -33,7 +33,12 @@ function App() {
   const [modelsState, setModelsState] = useState<{ [key: string]: boolean }>(
     {}
   );
-  const systemPrompt = "You act like Tom Hanks.";
+
+  // Store
+  const userInput = useChatStore((state) => state.userInput);
+  const setUserInput = useChatStore((state) => state.setUserInput);
+
+  const systemPrompt = "You are a very helpful assistant.";
 
   // Respond in markdown.
 
@@ -49,6 +54,7 @@ function App() {
     // console.log(report);
     setProgress(report.text);
   };
+
   // const selectedModel = "TinyLlama-1.1B-Chat-v0.4-q4f32_1-1k";
   // const selectedModel = "Phi1.5-q4f16_1-1k";
   const selectedModel = "Mistral-7B-Instruct-v0.2-q4f16_1";
@@ -68,7 +74,7 @@ function App() {
     return engine;
   }
 
-  async function send() {
+  async function onSend() {
     let loadedEngine = engine;
 
     // Start up the engine first
@@ -151,12 +157,12 @@ function App() {
       return;
     }
     await engine.resetChat();
-    setUserInput("");
+    // setUserInput("");
     setChatHistory([]);
     console.log("reset complete");
   }
 
-  async function stop() {
+  function onStop() {
     if (!engine) {
       console.error("Engine not loaded");
       return;
@@ -177,7 +183,6 @@ function App() {
     <>
       <div className="max-w-3xl mx-auto flex flex-col h-screen">
         <div className="p-2 text-xs">{progress}</div>
-
         <div className="p-2 text-xs text-center font-bold hidden">
           {MODELS.map((model, index) => (
             <div key={index}>
@@ -192,7 +197,7 @@ function App() {
             </div>
           ))}
         </div>
-        {/* List of messages */}
+        {/* MessageList */}
         <div className="flex-1 overflow-auto" ref={scrollRef}>
           <div className="max-w-3xl mx-auto text-base px-5">
             {chatHistory.map((message, index) => (
@@ -212,36 +217,16 @@ function App() {
                 <Markdown className="text-gray-700 pl-8 mt-2 leading-[1.75] prose">
                   {typeof message.content === "string"
                     ? message.content
-                    : "No content found"}
+                    : "Non-string content found"}
                 </Markdown>
               </div>
             ))}
           </div>
         </div>
-
+        <Button onClick={resetChat}>New</Button>
+        <Button onClick={loadEngine}>Load</Button>
         {/* User input footer */}
-        <div className="p-4 bg-white">
-          <div className="flex items-center p-2 bg-white border rounded-xl shadow-sm">
-            <Input
-              className="flex-1 border-none shadow-none focus:ring-0 
-              ring-0 focus:border-0 focus-visible:ring-0 text-base"
-              placeholder="Message Llama"
-              onChange={(e) => setUserInput(e.target.value)}
-              value={userInput}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  send();
-                }
-              }}
-            />
-            <Button className="p-2" variant="ghost" onClick={send}>
-              <FaArrowUp className="h-5 w-5 text-gray-500" />
-            </Button>
-            <Button onClick={resetChat}>New</Button>
-            <Button onClick={stop}>Stop</Button>
-            <Button onClick={loadEngine}>Load</Button>
-          </div>
-        </div>
+        <UserInput onSend={onSend} onStop={onStop} />
       </div>
     </>
   );
