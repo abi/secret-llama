@@ -93,6 +93,8 @@ function App() {
           ...chatHistory,
           userMessage,
         ],
+        temperature: 0.5,
+        max_gen_len: 1024,
       });
 
       // Get each chunk from the stream
