@@ -9,10 +9,10 @@ function DebugUI({
 }) {
   return (
     <>
-      <Button onClick={loadEngine} variant="outline">
+      <Button onClick={loadEngine} variant="outline" className="hidden">
         Load
       </Button>
-      <div className="p-2 text-xs max-w-[250px]">{progress}</div>
+      <div className="p-2 text-xs max-w-[250px] hidden">{progress}</div>
     </>
   );
 }

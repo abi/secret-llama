@@ -36,6 +36,10 @@ function App() {
   const initProgressCallback = (report: webllm.InitProgressReport) => {
     console.log(report);
     setProgress(report.text);
+    setChatHistory((history) => [
+      ...history.slice(0, -1),
+      { role: "assistant", content: report.text },
+    ]);
   };
 
   async function loadEngine() {
@@ -58,23 +62,23 @@ function App() {
 
     let loadedEngine = engine;
 
+    // Add the user message to the chat history
+    const userMessage: webllm.ChatCompletionMessageParam = {
+      role: "user",
+      content: userInput,
+    };
+    setChatHistory((history) => [
+      ...history,
+      userMessage,
+      { role: "assistant", content: "" },
+    ]);
+    setUserInput("");
+
     // Start up the engine first
     if (!loadedEngine) {
       console.log("Engine not loaded");
       loadedEngine = await loadEngine();
     }
-
-    const userMessage: webllm.ChatCompletionMessageParam = {
-      role: "user",
-      content: userInput,
-    };
-    setChatHistory((history) => [...history, userMessage]);
-    setUserInput("");
-
-    setChatHistory((history) => [
-      ...history,
-      { role: "assistant", content: "" },
-    ]);
 
     try {
       const completion = await loadedEngine.chat.completions.create({
@@ -164,7 +168,8 @@ function App() {
               How can I help you today?
             </h1>
             <h2 className="text-sm text-center">
-              🔒 Your data and conversations never leave your computer.
+              🔒 Your data never leaves your computer. Feel free to turn off the
+              internet.
             </h2>
           </div>
         ) : (
