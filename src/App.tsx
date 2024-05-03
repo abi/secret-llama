@@ -159,7 +159,7 @@ function App() {
         {chatHistory.length === 0 ? (
           <div className="flex justify-center items-center h-full flex-col">
             <FaHorseHead className="text-4xl border p-1 rounded-full text-gray-500 mb-6" />
-            <h1 className="text-3xl font-medium text-center mb-8">
+            <h1 className="text-3xl font-medium text-center mb-8 leading-relaxed">
               Welcome to Fully Private Chat. <br />
               How can I help you today?
             </h1>
