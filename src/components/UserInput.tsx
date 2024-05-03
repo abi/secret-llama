@@ -17,7 +17,7 @@ function UserInput({
   const isGenerating = useChatStore((state) => state.isGenerating);
 
   return (
-    <div className="p-4">
+    <div className="p-4 py-2">
       <div className="flex items-center p-2 border rounded-xl shadow-sm">
         <Input
           className="flex-1 border-none shadow-none focus:ring-0 

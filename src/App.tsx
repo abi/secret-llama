@@ -175,14 +175,32 @@ function App() {
         {chatHistory.length === 0 ? (
           <div className="flex justify-center items-center h-full flex-col">
             <FaHorseHead className="text-4xl border p-1 rounded-full text-gray-500 mb-6" />
-            <h1 className="text-3xl font-medium text-center mb-8 leading-relaxed">
-              Welcome to Fully Private Chat. <br />
-              How can I help you today?
-            </h1>
-            <h2 className="text-sm text-center">
-              🔒 Your data never leaves your computer. Feel free to turn off the
-              internet.
-            </h2>
+            <div className="max-w-2xl flex flex-col justify-center ">
+              <h1 className="text-3xl font-medium  mb-8 leading-relaxed text-center">
+                Welcome to Fully Private Chat.
+              </h1>
+              <h2 className="text-lg mb-4 prose">
+                Unlike ChatGPT, the models available here run entirely within
+                your browser which means:
+                <ol>
+                  <li>Your conversation data never leaves your computer.</li>
+                  <li>
+                    After the model is initially downloaded, you can disconnect
+                    your WiFi. It will work offline.
+                  </li>
+                </ol>
+                <p>
+                  Note: the first message can take a while to process because
+                  the model needs to be fully downloaded to your computer. But
+                  on future visits to this website, the model will load quickly
+                  from the local storage on your computer.
+                </p>
+                <p>
+                  Supported browsers: Chrome, Edge (GPU required; Mobile not
+                  recommended)
+                </p>
+              </h2>
+            </div>
           </div>
         ) : (
           <MessageList />
