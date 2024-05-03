@@ -193,11 +193,12 @@ function App() {
             <FaHorseHead className="text-4xl border p-1 rounded-full text-gray-500 mb-6" />
             <div className="max-w-2xl flex flex-col justify-center ">
               <h1 className="text-3xl font-medium  mb-8 leading-relaxed text-center">
-                Welcome to Fully Private Chat.
+                Welcome to Secret Llama
               </h1>
               <h2 className="text-lg mb-4 prose">
-                Unlike ChatGPT, the models available here run entirely within
-                your browser which means:
+                Secret Llama is a free and fully private chatbot. Unlike
+                ChatGPT, the models available here run entirely within your
+                browser which means:
                 <ol>
                   <li>Your conversation data never leaves your computer.</li>
                   <li>

@@ -1,4 +1,4 @@
-# fully-private-chat
+# Secret Llama
 
 Fully private, browser-based UI for open weights models (Llama 3, Mistral, etc.). The focus for this project is on bringing an easy-to-use interface on par with ChatGPT or any other hosted LLM to open source LLMs.
 
