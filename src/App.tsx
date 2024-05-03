@@ -9,7 +9,6 @@ import MessageList from "./components/MessageList";
 import { FaHorseHead } from "react-icons/fa6";
 
 const appConfig = webllm.prebuiltAppConfig;
-// CHANGE THIS TO SEE EFFECTS OF BOTH, CODE BELOW DO NOT NEED TO CHANGE
 appConfig.useIndexedDBCache = true;
 
 if (appConfig.useIndexedDBCache) {
