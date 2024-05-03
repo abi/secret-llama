@@ -151,7 +151,7 @@ function App() {
 
   return (
     <div className="px-4 w-full">
-      <div className="absolute top-0 left-0 p-4 flex flex-col gap-2">
+      <div className="absolute top-0 left-0 p-4 flex items-center gap-2">
         <div>
           <ResetChatButton resetChat={resetChat} />
         </div>

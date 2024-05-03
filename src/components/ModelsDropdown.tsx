@@ -1,13 +1,15 @@
 import * as webllm from "@mlc-ai/web-llm";
 import { useEffect, useState } from "react";
-
-const MODELS = [
-  "Mistral-7B-Instruct-v0.2-q4f16_1",
-  "Llama-3-8B-Instruct-q4f16_1",
-  "TinyLlama-1.1B-Chat-v0.4-q4f32_1-1k",
-  "Phi1.5-q4f16_1-1k",
-];
-
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import useChatStore from "../hooks/useChatStore";
+import { MODEL_DESCRIPTIONS, Model } from "../models";
 // Should be shared with global
 
 const appConfig = webllm.prebuiltAppConfig;
@@ -21,6 +23,9 @@ if (appConfig.useIndexedDBCache) {
 }
 
 function ModelsDropdown() {
+  const selectedModel = useChatStore((state) => state.selectedModel);
+  const setSelectedModel = useChatStore((state) => state.setSelectedModel);
+
   const [modelsState, setModelsState] = useState<{ [key: string]: boolean }>(
     {}
   );
@@ -29,7 +34,7 @@ function ModelsDropdown() {
 
   async function updateModelStatus() {
     console.log("Checking model status");
-    MODELS.forEach(async (model) => {
+    Object.values(Model).forEach(async (model) => {
       const isInCache = await webllm.hasModelInCache(model, appConfig);
       console.log(`${model} in cache: ${isInCache}`);
       setModelsState((prev) => ({
@@ -46,19 +51,36 @@ function ModelsDropdown() {
   }, []);
 
   return (
-    <div className="p-2 text-xs text-center font-bold hidden">
-      {MODELS.map((model, index) => (
-        <div key={index}>
-          <div>{model}</div>
-          <span
-            className={`ml-2 ${
-              modelsState[model] ? "text-green-500" : "text-red-500"
-            }`}
-          >
-            {modelsState[model] ? "Cached" : "Not Cached"}
-          </span>
-        </div>
-      ))}
+    <div className="p-2 text-xs text-center font-bold">
+      <div className="hidden">
+        {Object.values(Model).map((model, index) => (
+          <div key={index}>
+            <div>{model}</div>
+            <span
+              className={`ml-2 ${
+                modelsState[model] ? "text-green-500" : "text-red-500"
+              }`}
+            >
+              {modelsState[model] ? "Cached" : "Not Cached"}
+            </span>
+          </div>
+        ))}
+      </div>
+      <Select value={selectedModel} onValueChange={setSelectedModel}>
+        <SelectTrigger className="w-[200px]">
+          <SelectValue></SelectValue>
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            {Object.values(Model).map((model) => (
+              <SelectItem key={model} value={model}>
+                {MODEL_DESCRIPTIONS[model].icon}{" "}
+                {MODEL_DESCRIPTIONS[model].displayName}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
     </div>
   );
 }

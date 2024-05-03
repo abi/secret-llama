@@ -1,9 +1,11 @@
 import * as webllm from "@mlc-ai/web-llm";
 import { create } from "zustand";
+import { Model } from "../models";
 
 interface State {
   // Model
-  selectedModel: string;
+  selectedModel: Model;
+  setSelectedModel: (model: Model) => void;
 
   // User input
   userInput: string;
@@ -24,9 +26,8 @@ interface State {
 
 const useChatStore = create<State>((set) => ({
   // Model
-  // selectedModel: "Mistral-7B-Instruct-v0.2-q4f16_1",
-  selectedModel: "TinyLlama-1.1B-Chat-v0.4-q4f32_1-1k",
-  //selectedModel: "Phi1.5-q4f16_1-1k",
+  selectedModel: Model.TINYLAMA_1_1B_CHAT_V0_4_Q4F32_1_1K,
+  setSelectedModel: (model: Model) => set({ selectedModel: model }),
 
   // User input
   userInput: "",
