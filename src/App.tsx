@@ -6,6 +6,7 @@ import ResetChatButton from "./components/ResetChatButton";
 import DebugUI from "./components/DebugUI";
 import ModelsDropdown from "./components/ModelsDropdown";
 import MessageList from "./components/MessageList";
+import { FaHorseHead } from "react-icons/fa6";
 
 const appConfig = webllm.prebuiltAppConfig;
 // CHANGE THIS TO SEE EFFECTS OF BOTH, CODE BELOW DO NOT NEED TO CHANGE
@@ -33,7 +34,7 @@ function App() {
   // Respond in markdown.
 
   const initProgressCallback = (report: webllm.InitProgressReport) => {
-    // console.log(report);
+    console.log(report);
     setProgress(report.text);
   };
 
@@ -155,7 +156,20 @@ function App() {
       </div>
 
       <div className="max-w-3xl mx-auto flex flex-col h-screen">
-        <MessageList />
+        {chatHistory.length === 0 ? (
+          <div className="flex justify-center items-center h-full flex-col">
+            <FaHorseHead className="text-4xl border p-1 rounded-full text-gray-500 mb-6" />
+            <h1 className="text-3xl font-medium text-center mb-8">
+              Welcome to Fully Private Chat. <br />
+              How can I help you today?
+            </h1>
+            <h2 className="text-sm text-center">
+              🔒 Your data and conversations never leave your computer.
+            </h2>
+          </div>
+        ) : (
+          <MessageList />
+        )}
         <UserInput onSend={onSend} onStop={onStop} />
       </div>
     </div>
