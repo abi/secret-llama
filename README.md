@@ -2,24 +2,25 @@
 
 ![secret llama](https://github.com/abi/secret-llama/assets/23818/0bf43a95-4fe5-4c53-87bc-b558e5c4968f)
 
-Fully private LLM chatbot supporting various open weights models (Llama 3, Mistral, etc.). 
+Entirely-in-browser, fully private LLM chatbot supporting Llama 3, Mistral and other open source models. 
 
 - Fully private = No conversation data ever leaves your computer
-- Runs in the browser = no server needed and no install needed!
+- Runs in the browser = No server needed and no install needed!
 - Works offline
-
-This project focuses on providing an easy-to-use interface on par with ChatGPT, but for open source LLMs. 
+- Easy-to-use interface on par with ChatGPT, but for open source LLMs
 
 Big thanks to the inference engine provided by [webllm](https://github.com/mlc-ai/web-llm).
 
 ## System Requirements
 
-To run this, you need a modern browser with support for WebGPU, as this is the technology used for running the machine learning models in the browser. According to [caniuse](https://caniuse.com/?search=WebGPU), as of the time of writing, WebGPU is supported:
+To run this, you need a modern browser with support for WebGPU. According to [caniuse](https://caniuse.com/?search=WebGPU), WebGPU is supported on:
 
 - Google Chrome
 - Microsoft Edge
 
-It's also available in Firefox, but it needs to be enabled manually through the dom.webgpu.enabled flag. Safari on MacOS also has experimental support for WebGPU which can be enabled through the WebGPU experimental feature. In addition to WebGPU support, various models might have specific RAM requirements.
+It's also available in Firefox, but it needs to be enabled manually through the dom.webgpu.enabled flag. Safari on MacOS also has experimental support for WebGPU which can be enabled through the WebGPU experimental feature. 
+
+In addition to WebGPU support, various models might have specific RAM requirements.
 
 ## Try it out
 
