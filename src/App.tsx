@@ -76,7 +76,20 @@ function App() {
     // Start up the engine first
     if (!loadedEngine) {
       console.log("Engine not loaded");
-      loadedEngine = await loadEngine();
+      try {
+        loadedEngine = await loadEngine();
+      } catch (e) {
+        setIsGenerating(false);
+        console.error(e);
+        setChatHistory((history) => [
+          ...history.slice(0, -1),
+          {
+            role: "assistant",
+            content: "Could not load the model because " + e,
+          },
+        ]);
+        return;
+      }
     }
 
     try {
