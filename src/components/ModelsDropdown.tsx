@@ -22,7 +22,11 @@ if (appConfig.useIndexedDBCache) {
   console.log("Using Cache API");
 }
 
-function ModelsDropdown() {
+function ModelsDropdown({
+  resetEngineAndChatHistory,
+}: {
+  resetEngineAndChatHistory: () => void;
+}) {
   const selectedModel = useChatStore((state) => state.selectedModel);
   const setSelectedModel = useChatStore((state) => state.setSelectedModel);
 
@@ -66,7 +70,13 @@ function ModelsDropdown() {
           </div>
         ))}
       </div>
-      <Select value={selectedModel} onValueChange={setSelectedModel}>
+      <Select
+        value={selectedModel}
+        onValueChange={(selectedModel) => {
+          setSelectedModel(selectedModel as Model);
+          resetEngineAndChatHistory();
+        }}
+      >
         <SelectTrigger className="w-[200px]">
           <SelectValue></SelectValue>
         </SelectTrigger>

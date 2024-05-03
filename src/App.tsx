@@ -44,6 +44,13 @@ function App() {
   async function loadEngine() {
     console.log("Loading engine");
 
+    setChatHistory((history) => [
+      ...history.slice(0, -1),
+      {
+        role: "assistant",
+        content: "Loading model... (this might take a bit)",
+      },
+    ]);
     const engine: webllm.EngineInterface = await webllm.CreateWebWorkerEngine(
       new Worker(new URL("./worker.ts", import.meta.url), { type: "module" }),
       selectedModel,
@@ -76,6 +83,7 @@ function App() {
     // Start up the engine first
     if (!loadedEngine) {
       console.log("Engine not loaded");
+
       try {
         loadedEngine = await loadEngine();
       } catch (e) {
@@ -148,7 +156,15 @@ function App() {
     await engine.resetChat();
     setUserInput("");
     setChatHistory(() => []);
-    console.log("reset complete");
+  }
+
+  async function resetEngineAndChatHistory() {
+    if (engine) {
+      await engine.unload();
+    }
+    setEngine(null);
+    setUserInput("");
+    setChatHistory(() => []);
   }
 
   function onStop() {
@@ -168,7 +184,7 @@ function App() {
           <ResetChatButton resetChat={resetChat} />
         </div>
         <DebugUI loadEngine={loadEngine} progress={progress} />
-        <ModelsDropdown />
+        <ModelsDropdown resetEngineAndChatHistory={resetEngineAndChatHistory} />
       </div>
 
       <div className="max-w-3xl mx-auto flex flex-col h-screen">
