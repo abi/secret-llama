@@ -2,11 +2,15 @@
 
 ![secret llama](https://github.com/abi/secret-llama/assets/23818/0bf43a95-4fe5-4c53-87bc-b558e5c4968f)
 
-Fully private LLM chatbot supporting various open weights models (Llama 3, Mistral, etc.). This project focuses on providing an easy-to-use interface on par with ChatGPT, but for open source LLMs. Big thanks to the inference engine provided by [webllm](https://github.com/mlc-ai/web-llm).
+Fully private LLM chatbot supporting various open weights models (Llama 3, Mistral, etc.). 
 
 - Fully private = No conversation data ever leaves your computer
-- Runs in the browser - no server needed and no install needed!
+- Runs in the browser = no server needed and no install needed!
 - Works offline
+
+This project focuses on providing an easy-to-use interface on par with ChatGPT, but for open source LLMs. 
+
+Big thanks to the inference engine provided by [webllm](https://github.com/mlc-ai/web-llm).
 
 ## System Requirements
 
