@@ -2,6 +2,7 @@ import { FaArrowUp } from "react-icons/fa6";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import useChatStore from "../hooks/useChatStore";
+import { MODEL_DESCRIPTIONS } from "../models";
 
 function UserInput({
   onSend,
@@ -21,7 +22,7 @@ function UserInput({
         <Input
           className="flex-1 border-none shadow-none focus:ring-0 
               ring-0 focus:border-0 focus-visible:ring-0 text-base"
-          placeholder={`Message ${selectedModel}`}
+          placeholder={`Message ${MODEL_DESCRIPTIONS[selectedModel].displayName}`}
           onChange={(e) => setUserInput(e.target.value)}
           value={userInput}
           onKeyDown={(e) => {
