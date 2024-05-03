@@ -1,2 +1,2 @@
-# private-chat
+# fully-private-chat
  
