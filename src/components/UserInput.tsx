@@ -38,6 +38,17 @@ function UserInput({
         )}
         {isGenerating && <Button onClick={onStop}>Stop</Button>}
       </div>
+      <a
+        href="#"
+        onClick={() =>
+          alert(
+            "WhimsyWorks, Inc. provides this open source software and website as-is and makes no representations or warranties of any kind concerning its accuracy, safety, or suitability. The user assumes full responsibility for any consequences resulting from its use. WhimsyWorks, Inc. expressly disclaims all liability for any direct, indirect, or consequential harm that may result."
+          )
+        }
+        className="text-xs text-gray-400 hover:underline mt-2 text-right flex justify-end w-full"
+      >
+        Disclaimer
+      </a>
     </div>
   );
 }
