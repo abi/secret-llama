@@ -11,6 +11,11 @@ Entirely-in-browser, fully private LLM chatbot supporting Llama 3, Mistral and o
 
 Big thanks to the inference engine provided by [webllm](https://github.com/mlc-ai/web-llm).
 
+Join us on Discord
+
+[![](https://dcbadge.vercel.app/api/server/nDjadD9U)](https://discord.gg/nDjadD9U)
+
+
 ## System Requirements
 
 To run this, you need a modern browser with support for WebGPU. According to [caniuse](https://caniuse.com/?search=WebGPU), WebGPU is supported on:
