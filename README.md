@@ -54,6 +54,6 @@ yarn dev
 
 We would love contributions to improve the interface, support more models, speed up initial model loading time and fix bugs.
 
-## Other Projects
+## Other Projects by Author
 
 Check out [screenshot to code](https://github.com/abi/screenshot-to-code) and [Pico - AI-powered app builder](https://picoapps.xyz)
