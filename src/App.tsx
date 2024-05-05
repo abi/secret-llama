@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as webllm from "@mlc-ai/web-llm";
+import useChatStore, { Conversation } from './hooks/useChatStore';
 import UserInput from "./components/UserInput";
-import useChatStore from "./hooks/useChatStore";
 import ResetChatButton from "./components/ResetChatButton";
+import ShowSidebarButton from './components/ShowSidebarButton';  // Update path accordingly
 import DebugUI from "./components/DebugUI";
-import ModelsDropdown from "./components/ModelsDropdown";
 import MessageList from "./components/MessageList";
+import Sidebar from "./components/Sidebar";
 import { FaHorseHead } from "react-icons/fa6";
 
 const appConfig = webllm.prebuiltAppConfig;
@@ -28,6 +29,35 @@ function App() {
   const setIsGenerating = useChatStore((state) => state.setIsGenerating);
   const chatHistory = useChatStore((state) => state.chatHistory);
   const setChatHistory = useChatStore((state) => state.setChatHistory);
+
+  // Conversation
+  const currentConversationId = useChatStore(state => state.currentConversationId);
+  const conversations = useChatStore(state => state.conversations);
+  const currentConversation = conversations.find(c => c.id === currentConversationId);
+
+  const loadConversationsFromIndexedDB = useChatStore((state) => state.loadConversationsFromIndexedDB);
+  const addConversation = useChatStore((state) => state.addConversation);
+
+  useEffect(() => {
+    const loadConversations = async () => {
+      if (conversations.length === 0) { // Only load if there are no conversations
+        console.log('loading conversations');
+        try {
+          const loadedConversations = await loadConversationsFromIndexedDB();
+          loadedConversations.forEach((conversation: Conversation) => {
+            if (!conversations.find(c => c.id === conversation.id)) {
+              addConversation(conversation);
+            }
+          });
+        } catch (error) {
+          console.error("Error loading conversations:", error);
+        }
+      }
+    };
+  
+    loadConversations();
+  }, []); // Ensure this runs only once
+  
 
   const systemPrompt = "You are a very helpful assistant.";
   // Respond in markdown.
@@ -73,11 +103,21 @@ function App() {
       role: "user",
       content: userInput,
     };
+
     setChatHistory((history) => [
       ...history,
       userMessage,
       { role: "assistant", content: "" },
     ]);
+
+    console.log('history', history);
+
+    // Add the message to the current conversation
+    useChatStore.getState().addMessageToCurrentConversation({
+      role: "user",
+      content: userInput,
+    });
+
     setUserInput("");
 
     // Start up the engine first
@@ -123,9 +163,18 @@ function App() {
             ...history.slice(0, -1),
             { role: "assistant", content: assistantMessage },
           ]);
+
         }
+
       }
 
+      // Add the message to the current conversation
+      useChatStore.getState().addMessageToCurrentConversation({
+        role: "assistant",
+        content: assistantMessage,
+      });
+
+      console.log('testing');
       setIsGenerating(false);
 
       console.log(await loadedEngine.runtimeStatsText());
@@ -177,55 +226,83 @@ function App() {
     engine.interruptGenerate();
   }
 
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
-    <div className="px-4 w-full">
-      <div className="absolute top-0 left-0 p-4 flex items-center gap-2">
-        <div>
+    <div className="flex flex-col h-screen">
+      {/* Sidebar */}
+      <Sidebar sidebarOpen={sidebarOpen} resetEngineAndChatHistory={resetEngineAndChatHistory} />
+
+      {/* Main Chat Area */}
+      <div className="flex-grow flex flex-col">
+        <div className="fixed py-2 top-0 w-full flex justify-between items-center p-4 bg-white z-10">
+
+          {/* Sidebar Toggle Button */}
+          <ShowSidebarButton sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+
+          {/* Display current conversation name or 'Temporary chat' */}
+          <div>
+            {currentConversation ? (
+              <span className="text-lg font-medium">{currentConversation.name}</span>
+            ) : (
+              <span className="text-lg font-medium">Temporary Chat</span>
+            )}
+          </div>
+
+          {/* Reset Chat Button */}
           <ResetChatButton resetChat={resetChat} />
         </div>
+
         <DebugUI loadEngine={loadEngine} progress={progress} />
-        <ModelsDropdown resetEngineAndChatHistory={resetEngineAndChatHistory} />
+
+        <div className="max-w-3xl w-full mt-12 mb-24 mx-auto flex-grow">
+          {chatHistory.length === 0 ? (
+            <div className="flex justify-center items-center h-full flex-col">
+              <FaHorseHead className="text-4xl border p-1 rounded-full text-gray-500 mb-6" />
+              <div className="max-w-2xl flex flex-col justify-center ">
+                <h1 className="text-3xl font-medium  mb-8 leading-relaxed text-center">
+                  Welcome to Secret Llama
+                </h1>
+                <h2 className="text-lg mb-4 prose">
+                  Secret Llama is a free and fully private chatbot. Unlike
+                  ChatGPT, the models available here run entirely within your
+                  browser which means:
+                  <ol>
+                    <li>Your conversation data never leaves your computer.</li>
+                    <li>
+                      After the model is initially downloaded, you can disconnect
+                      your WiFi. It will work offline.
+                    </li>
+                  </ol>
+                  <p>
+                    Note: the first message can take a while to process because
+                    the model needs to be fully downloaded to your computer. But
+                    on future visits to this website, the model will load quickly
+                    from the local storage on your computer.
+                  </p>
+                  <p>
+                    Supported browsers: Chrome, Edge (GPU required; Mobile not
+                    recommended)
+                  </p>
+                </h2>
+              </div>
+            </div>
+          ) : (
+            <MessageList />
+          )}
+        </div>
       </div>
 
-      <div className="max-w-3xl mx-auto flex flex-col h-screen">
-        {chatHistory.length === 0 ? (
-          <div className="flex justify-center items-center h-full flex-col">
-            <FaHorseHead className="text-4xl border p-1 rounded-full text-gray-500 mb-6" />
-            <div className="max-w-2xl flex flex-col justify-center ">
-              <h1 className="text-3xl font-medium  mb-8 leading-relaxed text-center">
-                Welcome to Secret Llama
-              </h1>
-              <h2 className="text-lg mb-4 prose">
-                Secret Llama is a free and fully private chatbot. Unlike
-                ChatGPT, the models available here run entirely within your
-                browser which means:
-                <ol>
-                  <li>Your conversation data never leaves your computer.</li>
-                  <li>
-                    After the model is initially downloaded, you can disconnect
-                    your WiFi. It will work offline.
-                  </li>
-                </ol>
-                <p>
-                  Note: the first message can take a while to process because
-                  the model needs to be fully downloaded to your computer. But
-                  on future visits to this website, the model will load quickly
-                  from the local storage on your computer.
-                </p>
-                <p>
-                  Supported browsers: Chrome, Edge (GPU required; Mobile not
-                  recommended)
-                </p>
-              </h2>
-            </div>
-          </div>
-        ) : (
-          <MessageList />
-        )}
-        <UserInput onSend={onSend} onStop={onStop} />
-      </div>
+      {/* Overlay when sidebar is open */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-10" onClick={() => setSidebarOpen(false)}></div>
+      )}
+
+      {/* User Input */}
+      <UserInput onSend={onSend} onStop={onStop} />
     </div>
   );
+
 }
 
 export default App;

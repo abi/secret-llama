@@ -1,8 +1,8 @@
-import { FaArrowUp } from "react-icons/fa6";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import useChatStore from "../hooks/useChatStore";
-import { MODEL_DESCRIPTIONS } from "../models";
+import { FaArrowUp } from 'react-icons/fa6';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import useChatStore from '../hooks/useChatStore';
+import { MODEL_DESCRIPTIONS } from '../models';
 
 function UserInput({
   onSend,
@@ -17,8 +17,8 @@ function UserInput({
   const isGenerating = useChatStore((state) => state.isGenerating);
 
   return (
-    <div className="p-4 py-2">
-      <div className="flex items-center p-2 border rounded-xl shadow-sm">
+    <div className="fixed w-full flex-grow bottom-0 left-0 right-0 p-4 py-2 bg-white">
+      <div className="flex mx-auto max-w-2xl items-center p-2 border rounded-xl shadow-sm">
         <Input
           className="flex-1 border-none shadow-none focus:ring-0 
               ring-0 focus:border-0 focus-visible:ring-0 text-base"
@@ -26,7 +26,7 @@ function UserInput({
           onChange={(e) => setUserInput(e.target.value)}
           value={userInput}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
+            if (e.key === 'Enter') {
               onSend();
             }
           }}

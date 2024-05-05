@@ -15,7 +15,7 @@ function MessageList() {
   }, [chatHistory]);
 
   return (
-    <div className="flex-1 overflow-auto" ref={scrollRef}>
+    <div className="flex-1 overflow-auto"> {/* Added pb-16 for bottom padding */}
       <div className="max-w-3xl mx-auto text-base px-5">
         {chatHistory.map((message, index) => (
           <Message key={index} message={message} />
