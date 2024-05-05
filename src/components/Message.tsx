@@ -1,13 +1,9 @@
 import * as webllm from "@mlc-ai/web-llm";
 import { FaHorseHead, FaPerson } from "react-icons/fa6";
 import Markdown from "react-markdown";
-import {
-  Prism as SyntaxHighlighter,
-  SyntaxHighlighterProps,
-} from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import useChatStore from "../hooks/useChatStore";
 import { MODEL_DESCRIPTIONS } from "../models";
+import CodeMessage from "./CodeMessage";
 
 function Message({ message }: { message: webllm.ChatCompletionMessageParam }) {
   const selectedModel = useChatStore((state) => state.selectedModel);
@@ -26,21 +22,9 @@ function Message({ message }: { message: webllm.ChatCompletionMessageParam }) {
       </div>
       <Markdown
         components={{
-          code(props) {
-            const { children, className, ...rest } = props;
-            const match = /language-(\w+)/.exec(className || "");
-            return match ? (
-              <SyntaxHighlighter
-                {...(rest as Partial<SyntaxHighlighterProps>)}
-                PreTag="div"
-                children={String(children).replace(/\n$/, "")}
-                language={match[1]}
-                style={vscDarkPlus}
-              />
-            ) : (
-              <code {...rest} className={className}>
-                {children}
-              </code>
+          code({ children, className, ...rest }) {
+            return (
+              <CodeMessage className={className} children={children} {...rest} />
             );
           },
         }}
