@@ -24,7 +24,11 @@ function Message({ message }: { message: webllm.ChatCompletionMessageParam }) {
         components={{
           code({ children, className, ...rest }) {
             return (
-              <CodeMessage className={className} children={children} {...rest} />
+              <CodeMessage
+                className={className}
+                children={children}
+                {...rest}
+              />
             );
           },
         }}
