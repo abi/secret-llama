@@ -1,6 +1,11 @@
 import * as webllm from "@mlc-ai/web-llm";
 import { FaHorseHead, FaPerson } from "react-icons/fa6";
 import Markdown from "react-markdown";
+import {
+  Prism as SyntaxHighlighter,
+  SyntaxHighlighterProps,
+} from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import useChatStore from "../hooks/useChatStore";
 import { MODEL_DESCRIPTIONS } from "../models";
 
@@ -19,7 +24,28 @@ function Message({ message }: { message: webllm.ChatCompletionMessageParam }) {
             : "You"}
         </div>
       </div>
-      <Markdown className="text-gray-700 pl-8 mt-2 leading-[1.75] prose">
+      <Markdown
+        components={{
+          code(props) {
+            const { children, className, ...rest } = props;
+            const match = /language-(\w+)/.exec(className || "");
+            return match ? (
+              <SyntaxHighlighter
+                {...(rest as Partial<SyntaxHighlighterProps>)}
+                PreTag="div"
+                children={String(children).replace(/\n$/, "")}
+                language={match[1]}
+                style={vscDarkPlus}
+              />
+            ) : (
+              <code {...rest} className={className}>
+                {children}
+              </code>
+            );
+          },
+        }}
+        className="text-gray-700 pl-8 mt-2 leading-[1.75] prose"
+      >
         {typeof message.content === "string"
           ? message.content
           : "Non-string content found"}
