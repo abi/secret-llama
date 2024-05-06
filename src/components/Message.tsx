@@ -3,6 +3,7 @@ import { FaHorseHead, FaPerson } from "react-icons/fa6";
 import Markdown from "react-markdown";
 import useChatStore from "../hooks/useChatStore";
 import { MODEL_DESCRIPTIONS } from "../models";
+import CodeMessage from "./CodeMessage";
 
 function Message({ message }: { message: webllm.ChatCompletionMessageParam }) {
   const selectedModel = useChatStore((state) => state.selectedModel);
@@ -19,7 +20,20 @@ function Message({ message }: { message: webllm.ChatCompletionMessageParam }) {
             : "You"}
         </div>
       </div>
-      <Markdown className="text-gray-700 pl-8 mt-2 leading-[1.75] prose">
+      <Markdown
+        components={{
+          code({ children, className, ...rest }) {
+            return (
+              <CodeMessage
+                className={className}
+                children={children}
+                {...rest}
+              />
+            );
+          },
+        }}
+        className="text-gray-700 pl-8 mt-2 leading-[1.75] prose"
+      >
         {typeof message.content === "string"
           ? message.content
           : "Non-string content found"}
