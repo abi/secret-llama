@@ -6,7 +6,6 @@ import ResetChatButton from "./components/ResetChatButton";
 import DebugUI from "./components/DebugUI";
 import ModelsDropdown from "./components/ModelsDropdown";
 import MessageList from "./components/MessageList";
-import { FaHorseHead } from "react-icons/fa6";
 
 const appConfig = webllm.prebuiltAppConfig;
 appConfig.useIndexedDBCache = true;
@@ -189,13 +188,17 @@ function App() {
 
       <div className="max-w-3xl mx-auto flex flex-col h-screen">
         {chatHistory.length === 0 ? (
-          <div className="flex justify-center items-center h-full flex-col">
-            <FaHorseHead className="text-4xl border p-1 rounded-full text-gray-500 mb-6" />
+          <div className="flex justify-center items-center h-full flex-col overflow-y-scroll">
+            <img
+              src="favicon.png"
+              alt="Secret Llama"
+              className="mx-auto w-32 rounded-full mb-4 mt-2"
+            />
             <div className="max-w-2xl flex flex-col justify-center ">
               <h1 className="text-3xl font-medium  mb-8 leading-relaxed text-center">
                 Welcome to Secret Llama
               </h1>
-              <h2 className="text-lg mb-4 prose">
+              <h2 className="text-base mb-4 prose">
                 Secret Llama is a free and fully private chatbot. Unlike
                 ChatGPT, the models available here run entirely within your
                 browser which means:
@@ -212,9 +215,17 @@ function App() {
                   on future visits to this website, the model will load quickly
                   from the local storage on your computer.
                 </p>
+                <p>Supported browsers: Chrome, Edge (GPU required)</p>
                 <p>
-                  Supported browsers: Chrome, Edge (GPU required; Mobile not
-                  recommended)
+                  This project is open source.{" "}
+                  <a
+                    href="https://github.com/abi/secret-llama"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    See the Github page
+                  </a>{" "}
+                  for more details and to submit bugs and feature requests.
                 </p>
               </h2>
             </div>
