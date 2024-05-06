@@ -29,7 +29,7 @@ function CodeMessage({
       <header className="text-xs flex">
         <span className="text-xs text-slate-500">{match[1]}</span>
         <button
-          className="ml-auto text-slate-400 hover:text-slate-100 flex gap-2"
+          className="ml-auto text-slate-400 hover:text-slate-100 flex gap-2 items-center"
           onClick={onClickCopy}
         >
           {copied ? (
