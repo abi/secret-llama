@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import * as webllm from "@mlc-ai/web-llm";
 import useChatStore, { Conversation } from './hooks/useChatStore';
 import UserInput from "./components/UserInput";
-import ResetChatButton from "./components/ResetChatButton";
+/*import ResetChatButton from "./components/ResetChatButton";*/
 import ShowSidebarButton from './components/ShowSidebarButton';  // Update path accordingly
 import DebugUI from "./components/DebugUI";
 import MessageList from "./components/MessageList";
@@ -197,7 +197,7 @@ function App() {
   //   }
   // }, []);
 
-  async function resetChat() {
+  /*async function resetChat() {
     if (!engine) {
       console.error("Engine not loaded");
       return;
@@ -205,7 +205,7 @@ function App() {
     await engine.resetChat();
     setUserInput("");
     setChatHistory(() => []);
-  }
+  }*/
 
   async function resetEngineAndChatHistory() {
     if (engine) {
@@ -235,13 +235,13 @@ function App() {
 
       {/* Main Chat Area */}
       <div className="flex-grow flex flex-col">
-        <div className="fixed py-2 top-0 w-full flex justify-between items-center p-4 bg-white z-10">
-
-          {/* Sidebar Toggle Button */}
+        <div className="fixed py-2 top-0 w-full flex items-center px-4 bg-white z-10">
+          
+          {/* Sidebar Toggle Button - Left-aligned */}
           <ShowSidebarButton sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
-          {/* Display current conversation name or 'Temporary chat' */}
-          <div>
+          {/* Centered Title - Flexible space around */}
+          <div className="flex-grow flex justify-center">
             {currentConversation ? (
               <span className="text-lg font-medium">{currentConversation.name}</span>
             ) : (
@@ -249,8 +249,8 @@ function App() {
             )}
           </div>
 
-          {/* Reset Chat Button */}
-          <ResetChatButton resetChat={resetChat} />
+          {/* Reset Chat Button - Right-aligned */}
+          {/*<ResetChatButton resetChat={resetChat} />*/}
         </div>
 
         <DebugUI loadEngine={loadEngine} progress={progress} />
