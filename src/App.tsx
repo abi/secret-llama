@@ -188,7 +188,7 @@ function App() {
 
       <div className="max-w-3xl mx-auto flex flex-col h-screen">
         {chatHistory.length === 0 ? (
-          <div className="flex justify-center items-center h-full flex-col">
+          <div className="flex justify-center items-center h-full flex-col overflow-y-scroll">
             <img
               src="favicon.png"
               alt="Secret Llama"
@@ -215,9 +215,17 @@ function App() {
                   on future visits to this website, the model will load quickly
                   from the local storage on your computer.
                 </p>
+                <p>Supported browsers: Chrome, Edge (GPU required)</p>
                 <p>
-                  Supported browsers: Chrome, Edge (GPU required; Mobile not
-                  recommended)
+                  This project is open source.{" "}
+                  <a
+                    href="https://github.com/abi/secret-llama"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    See the Github page
+                  </a>{" "}
+                  for more details and to submit bugs and feature requests.
                 </p>
               </h2>
             </div>
