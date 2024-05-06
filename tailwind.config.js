@@ -17,6 +17,13 @@ module.exports = {
       },
     },
     extend: {
+      typography: {
+        DEFAULT: {
+          css: {
+            "--tw-prose-pre-bg": "rgb(30, 30, 30)",
+          },
+        },
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
