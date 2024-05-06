@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { FaTrash, FaPen, FaEllipsisV, FaCheck, FaPlus } from 'react-icons/fa';
+import { FaTrash, FaPen, FaEllipsisV, FaCheck, FaEdit, FaUserSecret } from 'react-icons/fa';
 import { Button } from './ui/button'; // Import the Button component
 import useChatStore, { Conversation } from '../hooks/useChatStore';
 
@@ -13,6 +13,18 @@ const Conversations: React.FC = () => {
   const addConversation = useChatStore((state) => state.addConversation);
   const setCurrentConversationId = useChatStore((state) => state.setCurrentConversationId);
   const [newConversationName, setNewConversationName] = useState('');  
+
+  const handleCreatePrivateConversation = () => {
+    const newConversation: Conversation = {
+      id: `private-${Date.now()}`, // A unique ID prefixed with 'private-'
+      name: 'Private Conversation',
+      messages: [],
+    };
+
+    setSelectedConversation(newConversation);
+    setCurrentConversation(newConversation.messages);
+    setCurrentConversationId(newConversation.id);
+  };
 
   const handleCreateConversation = () => {
     const preString = 'Untitled';
@@ -47,6 +59,10 @@ const Conversations: React.FC = () => {
   };
 
   const handleEditName = (conversationId: string) => {
+    const currentConversation = conversations.find(conversation => conversation.id === conversationId);
+    if (currentConversation) {
+      setNewConversationName(currentConversation.name); // Set the current name in the input field
+    }
     setEditingConversationId(conversationId);
   };
   
@@ -74,8 +90,11 @@ const Conversations: React.FC = () => {
 
   return (
     <div className="">
+      <Button onClick={handleCreatePrivateConversation} variant="outline" className="items-center justify-start text-xs text-left flex items-left mr-auto px-4 py-2 rounded shadow mb-2 w-full">
+          <FaUserSecret className="mr-2" /> New Private Chat
+      </Button>
       <Button onClick={handleCreateConversation} variant="outline" className="items-center justify-start text-xs text-left flex items-left mr-auto px-4 py-2 rounded shadow mb-4 w-full">
-          <FaPlus className="mr-2" /> Create New Conversation
+          <FaEdit className="mr-2" /> New Stored Chat
       </Button>
       <h2 className="text-base bold font-medium">Conversations</h2>
       <ul className="divide-y divide-gray-200">

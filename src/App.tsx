@@ -245,7 +245,7 @@ function App() {
             {currentConversation ? (
               <span className="text-lg font-medium">{currentConversation.name}</span>
             ) : (
-              <span className="text-lg font-medium">Temporary Chat</span>
+              <span className="text-lg font-medium">Private Chat</span>
             )}
           </div>
 
