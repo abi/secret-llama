@@ -55,7 +55,7 @@ function ModelsDropdown({
   }, []);
 
   return (
-    <div className="p-2 text-xs text-center font-bold">
+    <div className="ml-2 mr-right text-center text-xs font-bold">
       <div className="hidden">
         {Object.values(Model).map((model, index) => (
           <div key={index}>
@@ -77,7 +77,7 @@ function ModelsDropdown({
           resetEngineAndChatHistory();
         }}
       >
-        <SelectTrigger className="w-[200px]">
+        <SelectTrigger className="bg-white w-full text-xs">
           <SelectValue></SelectValue>
         </SelectTrigger>
         <SelectContent>
