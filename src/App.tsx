@@ -3,6 +3,7 @@ import * as webllm from "@mlc-ai/web-llm";
 import useChatStore, { Conversation } from './hooks/useChatStore';
 import UserInput from "./components/UserInput";
 /*import ResetChatButton from "./components/ResetChatButton";*/
+import ModelsDropdown from "./components/ModelsDropdown";
 import ShowSidebarButton from './components/ShowSidebarButton';  // Update path accordingly
 import DebugUI from "./components/DebugUI";
 import MessageList from "./components/MessageList";
@@ -29,6 +30,10 @@ function App() {
   const setIsGenerating = useChatStore((state) => state.setIsGenerating);
   const chatHistory = useChatStore((state) => state.chatHistory);
   const setChatHistory = useChatStore((state) => state.setChatHistory);
+  
+  // Sidebar state
+  const sidebarOpen = useChatStore((state) => state.sidebarOpen);
+  const setSidebarOpen = useChatStore((state) => state.setSidebarOpen);
 
   // Conversation
   const currentConversationId = useChatStore(state => state.currentConversationId);
@@ -174,7 +179,6 @@ function App() {
         content: assistantMessage,
       });
 
-      console.log('testing');
       setIsGenerating(false);
 
       console.log(await loadedEngine.runtimeStatsText());
@@ -226,22 +230,23 @@ function App() {
     engine.interruptGenerate();
   }
 
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
   return (
     <div className="flex flex-col h-screen">
       {/* Sidebar */}
-      <Sidebar sidebarOpen={sidebarOpen} resetEngineAndChatHistory={resetEngineAndChatHistory} />
+      <Sidebar />
 
       {/* Main Chat Area */}
       <div className="flex-grow flex flex-col">
         <div className="fixed py-2 top-0 w-full flex items-center px-4 bg-white z-10">
           
           {/* Sidebar Toggle Button - Left-aligned */}
-          <ShowSidebarButton sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          <ShowSidebarButton />
+
+          {/* Models dropdown - Left-aligned */}
+          <ModelsDropdown resetEngineAndChatHistory={resetEngineAndChatHistory} />
 
           {/* Centered Title - Flexible space around */}
-          <div className="flex-grow flex justify-center">
+          <div className="mr-2 flex-grow flex justify-end">
             {currentConversation ? (
               <span className="text-lg font-medium">{currentConversation.name}</span>
             ) : (
@@ -255,7 +260,7 @@ function App() {
 
         <DebugUI loadEngine={loadEngine} progress={progress} />
 
-        <div className="max-w-3xl w-full mt-12 mb-24 mx-auto flex-grow">
+        <div className="w-full mx-auto pt-12 pb-24 h-dvh">
           {chatHistory.length === 0 ? (
             <div className="flex justify-center items-center h-full flex-col">
               <FaHorseHead className="text-4xl border p-1 rounded-full text-gray-500 mb-6" />

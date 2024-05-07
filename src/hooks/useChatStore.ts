@@ -26,10 +26,17 @@ interface State {
   // User input
   userInput: string;
   setUserInput: (input: string) => void;
+  
+  // Sidebar state
+  sidebarOpen: boolean;
+  setSidebarOpen: (open: boolean) => void;
 
   // Inference state
   isGenerating: boolean;
   setIsGenerating: (isGenerating: boolean) => void;
+  
+  // Current conversation
+  getCurrentConversation: () => Conversation | null;  // Add this line
 
   // Chat history
   chatHistory: webllm.ChatCompletionMessageParam[];
@@ -76,6 +83,10 @@ const useChatStore = create<State>((set, get) => {
     userInput: "",
     setUserInput: (input: string) => set({ userInput: input }),
 
+    // Sidebar state
+    sidebarOpen: false,
+    setSidebarOpen: (open: boolean) => set({ sidebarOpen: open }),
+    
     // Inference state
     isGenerating: false,
     setIsGenerating: (isGenerating: boolean) => set({ isGenerating }),
@@ -91,6 +102,13 @@ const useChatStore = create<State>((set, get) => {
     conversations: [], // Initialize conversations as an empty array
     setCurrentConversation: (messages: webllm.ChatCompletionMessageParam[]) => {
       set({ chatHistory: messages });
+    },
+    getCurrentConversation: () => {
+      const currentId = get().currentConversationId;
+      if (currentId === null) {
+        return null;
+      }
+      return get().conversations.find(conversation => conversation.id === currentId) || null;
     },
     addMessageToCurrentConversation: (message: webllm.ChatCompletionMessageParam) => {
       const conversations = get().conversations.map((conversation) => {

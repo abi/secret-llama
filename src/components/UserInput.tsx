@@ -18,7 +18,7 @@ function UserInput({
 
   return (
     <div className="fixed w-full flex-grow bottom-0 left-0 right-0 p-4 py-2 bg-white">
-      <div className="flex mx-auto max-w-2xl items-center p-2 border rounded-xl shadow-sm">
+      <div className="flex mx-auto max-w-2xl items-center p-2 border rounded-xl">
         <Input
           className="flex-1 border-none shadow-none focus:ring-0 
               ring-0 focus:border-0 focus-visible:ring-0 text-base"
@@ -45,7 +45,7 @@ function UserInput({
             "WhimsyWorks, Inc. provides this open source software and website as-is and makes no representations or warranties of any kind concerning its accuracy, safety, or suitability. The user assumes full responsibility for any consequences resulting from its use. WhimsyWorks, Inc. expressly disclaims all liability for any direct, indirect, or consequential harm that may result."
           )
         }
-        className="text-xs text-gray-400 hover:underline mt-2 text-right flex justify-end w-full"
+        className="mx-auto max-w-2xl text-xs text-gray-400 hover:underline mt-1 text-right flex justify-end w-full"
       >
         Disclaimer
       </a>
