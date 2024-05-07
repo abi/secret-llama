@@ -1,0 +1,18 @@
+@import url('./tokens/color.css');
+@import url('./tokens/border-radius.css');
+
+@import url('./base/scrollbar.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
