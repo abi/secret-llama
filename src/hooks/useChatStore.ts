@@ -22,6 +22,10 @@ interface State {
       chatHistory: webllm.ChatCompletionMessageParam[]
     ) => webllm.ChatCompletionMessageParam[]
   ) => void;
+
+  // Disable button
+  disableComponent:boolean;
+  setDisableComponent:(disableComponent:boolean)=> void;
 }
 
 const useChatStore = create<State>((set) => ({
@@ -43,6 +47,10 @@ const useChatStore = create<State>((set) => ({
     set((state) => ({
       chatHistory: fn(state.chatHistory),
     })),
+
+    //Disable Component
+    disableComponent:false,
+    setDisableComponent:(disableComponent)=>set({disableComponent})
 }));
 
 export default useChatStore;
