@@ -5,28 +5,31 @@ import Message from "./Message";
 function MessageList() {
   const chatHistory = useChatStore((state) => state.chatHistory);
   const scrollRef = useRef<HTMLDivElement | null>(null);
-  const [enableAutoScroll, setEnableAutoScroll] = useState<boolean>(true);
+  const [isAutoScrollEnabled, setIsAutoScrollEnabled] = useState(true);
 
-  // Scroll to the bottom of the chat history when it changes, if at the bottom
+  // Scroll to the bottom of the chat when chat history changes,
+  // but only if we're at the bottom
   useEffect(() => {
-    if (scrollRef.current && enableAutoScroll) {
+    if (scrollRef.current && isAutoScrollEnabled) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [chatHistory, enableAutoScroll]);
+  }, [chatHistory, isAutoScrollEnabled]);
 
-  function onChatScroll(event: React.UIEvent<HTMLDivElement>) {
+  function onScroll(event: React.UIEvent<HTMLDivElement>) {
     const { scrollTop, clientHeight, scrollHeight } =
       event.target as HTMLDivElement;
+
+    // scrollHeight - scrollable content's total height
+    // scrollTop - number of pixels that are hidden from view above the scrollable area
+    //             (i.e. scrolled distance from the top)
+    // clientHeight - height of the scrollable area
     const isAtBottom = scrollHeight - scrollTop === clientHeight;
-    setEnableAutoScroll(isAtBottom);
+
+    setIsAutoScrollEnabled(isAtBottom);
   }
 
   return (
-    <div
-      className="flex-1 overflow-auto"
-      ref={scrollRef}
-      onScroll={onChatScroll}
-    >
+    <div className="flex-1 overflow-auto" ref={scrollRef} onScroll={onScroll}>
       <div className="max-w-3xl mx-auto text-base px-5">
         {chatHistory.map((message, index) => (
           <Message key={index} message={message} />
