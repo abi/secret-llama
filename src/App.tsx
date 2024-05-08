@@ -63,6 +63,10 @@ function App() {
   }
 
   async function onSend() {
+    // Don't send an empty message
+    if (!userInput) {
+      return;
+    }
     setIsGenerating(true);
 
     let loadedEngine = engine;
