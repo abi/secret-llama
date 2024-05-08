@@ -27,7 +27,6 @@ function UserInput({
           disabled={disableComponent}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              console.log("in")
               if(!userInput.trim()){
                 console.error("Illegal input. Input can't be empty.")
                 return 
