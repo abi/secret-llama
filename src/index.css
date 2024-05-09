@@ -95,13 +95,17 @@
     --ring: 212.7 26.8% 83.9%;
   }
 
+  .dark .prose {
+    --tw-prose-headings: #ffffff;
+  }
+
   .prose-light {
-    --tw-prose-body: #e0e0e0;
-    --tw-prose-headings: #e0e0e0;
+    --tw-prose-body: #ffffff;
+    --tw-prose-headings: #ffffff;
     --tw-prose-lead: #e0e0e0;
     --tw-prose-links: #ecdfdf;
     --tw-prose-bold: #ffffff;
-    --tw-prose-counters: #ffffff;
+    --tw-prose-counters: #ffffff75;
     --tw-prose-bullets: #ffffff;
     --tw-prose-hr: #ffffff;
     --tw-prose-quotes: #ffffff;

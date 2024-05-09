@@ -32,7 +32,7 @@ function Message({ message }: { message: webllm.ChatCompletionMessageParam }) {
             );
           },
         }}
-        className="text-gray-700 dark:text-white pl-8 mt-2 leading-[1.75] prose"
+        className="text-gray-700 dark:text-zinc-400 pl-8 mt-2 leading-[1.75] prose dark:prose-light"
       >
         {typeof message.content === "string"
           ? message.content
