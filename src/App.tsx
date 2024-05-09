@@ -3,9 +3,13 @@ import * as webllm from "@mlc-ai/web-llm";
 import UserInput from "./components/UserInput";
 import useChatStore from "./hooks/useChatStore";
 import ResetChatButton from "./components/ResetChatButton";
+import ColorModeButton from "./components/ColorModeButton";
 import DebugUI from "./components/DebugUI";
 import ModelsDropdown from "./components/ModelsDropdown";
 import MessageList from "./components/MessageList";
+import useColorMode from "./hooks/useColorMode";
+import useOLEDMode from "./hooks/useOLEDMode";
+import OLEDModeButton from "./components/OLEDModeButton";
 
 const appConfig = webllm.prebuiltAppConfig;
 appConfig.useIndexedDBCache = true;
@@ -19,6 +23,15 @@ if (appConfig.useIndexedDBCache) {
 function App() {
   const [engine, setEngine] = useState<webllm.EngineInterface | null>(null);
   const [progress, setProgress] = useState("Not loaded");
+  const { colorMode, toggleDarkMode } = useColorMode();
+  const { oledMode, toggleOLEDMode } = useOLEDMode();
+
+  const handleToggleColorMode = () => {
+    if (colorMode === "dark" && oledMode) {
+      toggleOLEDMode(); // This will turn off OLED mode if we are currently in dark mode and it's active
+    }
+    toggleDarkMode();
+  };
 
   // Store
   const userInput = useChatStore((state) => state.userInput);
@@ -182,6 +195,20 @@ function App() {
         <div>
           <ResetChatButton resetChat={resetChat} />
         </div>
+        <div>
+          <ColorModeButton
+            toggleColorMode={handleToggleColorMode}
+            colorMode={colorMode as "dark" | "light"}
+          />
+        </div>
+        {colorMode === "dark" && (
+          <div>
+            <OLEDModeButton
+              toggleOLEDMode={toggleOLEDMode}
+              oledMode={oledMode}
+            />
+          </div>
+        )}
         <DebugUI loadEngine={loadEngine} progress={progress} />
         <ModelsDropdown resetEngineAndChatHistory={resetEngineAndChatHistory} />
       </div>
@@ -198,7 +225,7 @@ function App() {
               <h1 className="text-3xl font-medium  mb-8 leading-relaxed text-center">
                 Welcome to Secret Llama
               </h1>
-              <h2 className="text-base mb-4 prose">
+              <h2 className="text-base mb-4 prose dark:prose-light">
                 Secret Llama is a free and fully private chatbot. Unlike
                 ChatGPT, the models available here run entirely within your
                 browser which means:
