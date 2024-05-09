@@ -10,7 +10,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build-and-push-prod:
+  build-docker-image:
     if: github.ref != 'refs/heads/staging'
     runs-on: ubuntu-latest
     permissions:
