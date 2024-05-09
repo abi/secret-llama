@@ -38,9 +38,6 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - name: Setup Production Env
-        run: cp .env.main .env
-
       - name: Build and push Docker image
         id: build-prod
         uses: docker/build-push-action@v5
