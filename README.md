@@ -15,6 +15,8 @@ Join us on Discord
 
 [![](https://dcbadge.vercel.app/api/server/QkVzykMc9V)](https://discord.gg/QkVzykMc9V)
 
+https://discord.gg/QkVzykMc9V
+
 ## System Requirements
 
 To run this, you need a modern browser with support for WebGPU. According to [caniuse](https://caniuse.com/?search=WebGPU), WebGPU is supported on:
