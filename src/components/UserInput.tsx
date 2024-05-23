@@ -3,7 +3,6 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import useChatStore from "../hooks/useChatStore";
 import { MODEL_DESCRIPTIONS } from "../models";
-
 function UserInput({
   onSend,
   onStop,
@@ -15,7 +14,7 @@ function UserInput({
   const setUserInput = useChatStore((state) => state.setUserInput);
   const selectedModel = useChatStore((state) => state.selectedModel);
   const isGenerating = useChatStore((state) => state.isGenerating);
-
+  const disableComponent=useChatStore((state)=>state.disableComponent);
   return (
     <div className="p-4 py-2">
       <div className="flex items-center p-2 border rounded-xl shadow-sm">
@@ -25,18 +24,27 @@ function UserInput({
           placeholder={`Message ${MODEL_DESCRIPTIONS[selectedModel].displayName}`}
           onChange={(e) => setUserInput(e.target.value)}
           value={userInput}
+          disabled={disableComponent}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
+              if(!userInput.trim()){
+                console.error("Illegal input. Input can't be empty.")
+                return 
+              }
               onSend();
             }
           }}
         />
         {!isGenerating && (
-          <Button className="p-2" variant="ghost" onClick={onSend}>
-            <FaArrowUp className="h-5 w-5 text-gray-500" />
+          <Button className="p-2 shadow-md" variant="ghost" onClick={()=>{
+            if(userInput.trim()){
+              console.log("in")
+              onSend()
+            }}} disabled={disableComponent}>
+            <FaArrowUp className="h-5 w-5 text-gray-500 text-semibold" />
           </Button>
         )}
-        {isGenerating && <Button onClick={onStop}>Stop</Button>}
+        {isGenerating && <Button onClick={onStop} disabled={!disableComponent} >Stop</Button>}
       </div>
       <a
         href="#"

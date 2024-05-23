@@ -28,6 +28,9 @@ function App() {
   const chatHistory = useChatStore((state) => state.chatHistory);
   const setChatHistory = useChatStore((state) => state.setChatHistory);
 
+  // const disableComponent=useChatStore((state)=>state.disableComponent);
+  const setDisableComponent=useChatStore((state)=>state.setDisableComponent);
+
   const systemPrompt = "You are a very helpful assistant.";
   // Respond in markdown.
 
@@ -64,21 +67,19 @@ function App() {
 
   async function onSend() {
     setIsGenerating(true);
-
+    setDisableComponent(true);
     let loadedEngine = engine;
 
     // Add the user message to the chat history
     const userMessage: webllm.ChatCompletionMessageParam = {
       role: "user",
-      content: userInput,
+      content: userInput.trim(),
     };
     setChatHistory((history) => [
       ...history,
       userMessage,
       { role: "assistant", content: "" },
     ]);
-    setUserInput("");
-
     // Start up the engine first
     if (!loadedEngine) {
       console.log("Engine not loaded");
@@ -95,6 +96,7 @@ function App() {
             content: "Could not load the model because " + e,
           },
         ]);
+        setDisableComponent(false);
         return;
       }
     }
@@ -125,12 +127,14 @@ function App() {
         }
       }
 
+      setUserInput("");
+      setDisableComponent(false);
       setIsGenerating(false);
-
       console.log(await loadedEngine.runtimeStatsText());
     } catch (e) {
-      setIsGenerating(false);
       console.error("EXCEPTION");
+      setIsGenerating(false);
+      setDisableComponent(false);
       console.error(e);
       setChatHistory((history) => [
         ...history,
@@ -171,8 +175,9 @@ function App() {
       console.error("Engine not loaded");
       return;
     }
-
+    
     setIsGenerating(false);
+    setDisableComponent(false);
     engine.interruptGenerate();
   }
 
@@ -233,7 +238,7 @@ function App() {
         ) : (
           <MessageList />
         )}
-        <UserInput onSend={onSend} onStop={onStop} />
+        <UserInput onSend={onSend} onStop={onStop}/>
       </div>
     </div>
   );

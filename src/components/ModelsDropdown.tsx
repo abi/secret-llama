@@ -52,7 +52,7 @@ function ModelsDropdown({
     if (IS_MODEL_STATUS_CHECK_ENABLED) {
       updateModelStatus();
     }
-  }, []);
+  }, [IS_MODEL_STATUS_CHECK_ENABLED]);
 
   return (
     <div className="p-2 text-xs text-center font-bold">
