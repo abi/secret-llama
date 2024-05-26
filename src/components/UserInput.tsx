@@ -1,6 +1,7 @@
+import { useRef } from "react";
 import { FaArrowUp } from "react-icons/fa6";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
 import useChatStore from "../hooks/useChatStore";
 import { MODEL_DESCRIPTIONS } from "../models";
 
@@ -16,20 +17,37 @@ function UserInput({
   const selectedModel = useChatStore((state) => state.selectedModel);
   const isGenerating = useChatStore((state) => state.isGenerating);
 
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  const handleSend = async () => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+    }
+
+    await onSend();
+  };
+
   return (
     <div className="p-4 py-2">
-      <div className="flex items-center p-2 border rounded-xl shadow-sm">
-        <Input
-          className="flex-1 border-none shadow-none focus:ring-0 
-              ring-0 focus:border-0 focus-visible:ring-0 text-base"
+      <div className="relative flex items-end p-2 border rounded-xl shadow-sm">
+        <Textarea
+          ref={textareaRef}
+          autosize
+          rows={1}
+          className="flex-1 max-h-[320px] pb-[6px] border-none shadow-none focus:ring-0 
+              ring-0 focus:border-0 focus-visible:ring-0 text-base
+              resize-none"
           placeholder={`Message ${MODEL_DESCRIPTIONS[selectedModel].displayName}`}
           onChange={(e) => setUserInput(e.target.value)}
           value={userInput}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              onSend();
-            }
-          }}
+          onKeyDown={handleKeyDown}
         />
         {!isGenerating && (
           <Button className="p-2" variant="ghost" onClick={onSend}>
