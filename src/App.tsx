@@ -7,6 +7,7 @@ import DebugUI from "./components/DebugUI";
 import ModelsDropdown from "./components/ModelsDropdown";
 import MessageList from "./components/MessageList";
 import { deleteModel } from "./hooks/useIndexedDatabase";
+import { Button } from "./components/ui/button";
 
 const appConfig = webllm.prebuiltAppConfig;
 appConfig.useIndexedDBCache = true;
@@ -185,13 +186,17 @@ function App() {
 
   return (
     <div className="w-full px-4">
-      <div className="absolute top-0 left-0 flex items-center gap-2 p-4">
-        <div>
-          <ResetChatButton resetChat={resetChat} />
+      <div className="absolute top-0 left-0 flex flex-col gap-2 p-4">
+        <div className="flex flex-row items-center gap-4">
+          <div>
+            <ResetChatButton resetChat={resetChat} />
+          </div>
+          <DebugUI loadEngine={loadEngine} progress={progress} />
+          <ModelsDropdown
+            resetEngineAndChatHistory={resetEngineAndChatHistory}
+          />
         </div>
-        <DebugUI loadEngine={loadEngine} progress={progress} />
-        <ModelsDropdown resetEngineAndChatHistory={resetEngineAndChatHistory} />
-        <button onClick={deleteSelectedModel}>Print model</button>
+        <Button onClick={deleteSelectedModel}>Delete selected model</Button>
       </div>
 
       <div className="flex flex-col h-screen max-w-3xl mx-auto">
