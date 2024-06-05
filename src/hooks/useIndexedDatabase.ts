@@ -42,104 +42,43 @@ const deleteKey = (objectStore: IDBObjectStore, key: string) => {
   });
 };
 
-export const deleteConfig = (model: Model) => {
+const deleteKeysByPattern = (objectStore: IDBObjectStore, pattern: RegExp) => {
   return new Promise((resolve, reject) => {
-    // Initialize the database
-    initDB("webllm/config")
+    const getAllKeysRequest = objectStore.getAllKeys();
+    getAllKeysRequest.onsuccess = () => {
+      const keys = getAllKeysRequest.result;
+      const keysToDelete = keys.filter((key) => pattern.test(String(key)));
+      Promise.all(
+        keysToDelete.map((key) => deleteKey(objectStore, String(key)))
+      )
+        .then(() => resolve("All matching keys deleted successfully."))
+        .catch((error) => reject("Error deleting one or more keys: " + error));
+    };
+    getAllKeysRequest.onerror = () => reject("Failed to retrieve keys");
+  });
+};
+
+const deleteItems = (model: Model, dbName: string) => {
+  return new Promise((resolve, reject) => {
+    initDB(dbName)
       .then((res) => {
-        console.log("res", res);
         if (res) {
           const objectStore = getStore(storeName);
-          // Perform the key deletion
-          deleteKey(
-            objectStore,
-            `https://huggingface.co/mlc-ai/${MODEL_DESCRIPTIONS[model].dbName}-MLC/resolve/main/mlc-chat-config.json`
-          )
-            .then((result) => {
-              console.log(result);
-              resolve("Config deleted successfully.");
-            })
-            .catch((error) => {
-              reject("Failed to delete config: " + error);
-            });
+          const regexPattern = new RegExp(
+            `${MODEL_DESCRIPTIONS[model].dbName}`
+          );
+          deleteKeysByPattern(objectStore, regexPattern)
+            .then(resolve)
+            .catch(reject);
         } else {
           reject("Failed to initialize database");
         }
       })
-      .catch((error) => {
-        reject("Database initialization failed: " + error);
-      });
+      .catch(reject);
   });
 };
 
-export const deleteModel = (model: Model) => {
-  return new Promise((resolve, reject) => {
-    initDB("webllm/model").then((res) => {
-      if (res) {
-        const objectStore = getStore(storeName);
-
-        const getAllKeysRequest = objectStore.getAllKeys();
-        getAllKeysRequest.onsuccess = () => {
-          const keys = getAllKeysRequest.result;
-          const shardPattern = new RegExp(`${MODEL_DESCRIPTIONS[model].dbName}`);
-
-          const keysToDelete = keys.filter((key) =>
-            shardPattern.test(String(key))
-          );
-
-          Promise.all(
-            keysToDelete.map((key) => deleteKey(objectStore, String(key)))
-          )
-            .then(() => resolve("All matching keys deleted successfully."))
-            .catch((error) => {
-              console.error("Error deleting one or more keys: ", error);
-              reject("Failed to delete one or more keys");
-            });
-        };
-        getAllKeysRequest.onerror = () => {
-          reject("Failed to retrieve keys");
-        };
-        const request = objectStore.delete(
-          `https://huggingface.co/mlc-ai/${MODEL_DESCRIPTIONS[model].dbName}-MLC/resolve/main/ndarray-cache.json`
-        );
-        request.onsuccess = () => {
-          resolve(request.result);
-        };
-
-        request.onerror = () => {
-          console.log("Error fetching keys: ", request.error);
-          reject("Failed to fetch keys");
-        };
-      } else {
-        reject("Failed to initialize database");
-      }
-    });
-  });
-};
-
-export const deleteWASM = (model: Model) => {
-  return new Promise((resolve, reject) => {
-    // Ensure the database is open and available
-    if (!db) {
-      reject("Database not initialized");
-      return;
-    }
-
-    initDB("webllm/wasm").then((res) => {
-      if (res) {
-        const objectStore = getStore(storeName);
-        const request = objectStore.delete(
-          `https://raw.githubusercontent.com/mlc-ai/binary-mlc-llm-libs/main/web-llm-models/v0_2_34/${MODEL_DESCRIPTIONS[model].dbName}-ctx1k-webgpu.wasm`
-        );
-        request.onsuccess = () => {
-          resolve(request.result);
-        };
-
-        request.onerror = () => {
-          console.log("Error fetching keys: ", request.error);
-          reject("Failed to fetch keys");
-        };
-      }
-    });
-  });
-};
+export const deleteConfig = (model: Model) =>
+  deleteItems(model, "webllm/config");
+export const deleteModel = (model: Model) => deleteItems(model, "webllm/model");
+export const deleteWASM = (model: Model) => deleteItems(model, "webllm/wasm");
