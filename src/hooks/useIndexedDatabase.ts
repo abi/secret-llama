@@ -5,7 +5,8 @@ let db: IDBDatabase;
 let version = 1;
 let storeName = "urls";
 
-export const initDB = (dbName: string): Promise<boolean> => {
+// to initialize the db object we need to access the database
+const initDB = (dbName: string): Promise<boolean> => {
   return new Promise((resolve) => {
     // open the connection
     request = indexedDB.open(dbName);
@@ -28,12 +29,14 @@ export const initDB = (dbName: string): Promise<boolean> => {
   });
 };
 
+// to get the object store from the database
 const getStore = (storeName: string) => {
   const transaction = db.transaction([storeName], "readwrite");
   const objectStore = transaction.objectStore(storeName);
   return objectStore;
 };
 
+// to delete a particular key from a store in a database
 const deleteKey = (objectStore: IDBObjectStore, key: string) => {
   return new Promise((resolve, reject) => {
     const request = objectStore.delete(key);
@@ -47,6 +50,7 @@ const deleteKeysByPattern = (objectStore: IDBObjectStore, pattern: RegExp) => {
     const getAllKeysRequest = objectStore.getAllKeys();
     getAllKeysRequest.onsuccess = () => {
       const keys = getAllKeysRequest.result;
+      // all keys which belong to the selected model
       const keysToDelete = keys.filter((key) => pattern.test(String(key)));
       Promise.all(
         keysToDelete.map((key) => deleteKey(objectStore, String(key)))
@@ -78,6 +82,7 @@ const deleteItems = (model: Model, dbName: string) => {
   });
 };
 
+// the model gets stored in 3 databases, so we need to initialize each of them one by one and delete the entries from them
 const deleteConfigDB = (model: Model) => deleteItems(model, "webllm/config");
 const deleteModelDB = (model: Model) => deleteItems(model, "webllm/model");
 const deleteWASMDB = (model: Model) => deleteItems(model, "webllm/wasm");
