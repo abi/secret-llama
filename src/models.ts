@@ -6,22 +6,27 @@ export enum Model {
 }
 
 export const MODEL_DESCRIPTIONS: {
-  [key in Model]: { displayName: string; icon: string };
+  [key in Model]: { displayName: string; dbName: string; icon: string };
 } = {
   "Llama-3-8B-Instruct-q4f16_1": {
     displayName: "Llama 3",
+    dbName: "lama-3-8B-Instruct-q4f16_1",
     icon: "🦙",
   },
   "Mistral-7B-Instruct-v0.2-q4f16_1": {
     displayName: "Mistral 7B",
+    dbName: "Mistral-7B-Instruct-v0.2-q4f16_1"	
+    ,
     icon: "🌬️",
   },
   "TinyLlama-1.1B-Chat-v0.4-q4f32_1-1k": {
     displayName: "TinyLlama",
+    dbName: "TinyLlama-1.1B-Chat-v0.4-q4f32_1",
     icon: "🦙",
   },
   "Phi1.5-q4f16_1-1k": {
     displayName: "Phi 1.5",
+    dbName: "phi-1_5-q4f16_1",
     icon: "🦙",
   },
 };

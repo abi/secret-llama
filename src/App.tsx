@@ -6,6 +6,11 @@ import ResetChatButton from "./components/ResetChatButton";
 import DebugUI from "./components/DebugUI";
 import ModelsDropdown from "./components/ModelsDropdown";
 import MessageList from "./components/MessageList";
+import {
+  deleteConfig,
+  deleteModel,
+  deleteWASM,
+} from "./hooks/useIndexedDatabase";
 
 const appConfig = webllm.prebuiltAppConfig;
 appConfig.useIndexedDBCache = true;
@@ -38,6 +43,14 @@ function App() {
       ...history.slice(0, -1),
       { role: "assistant", content: report.text },
     ]);
+  };
+
+  const printDB = () => {
+    deleteConfig(selectedModel)
+      .then(() => deleteModel(selectedModel))
+      .then(() => deleteWASM(selectedModel))
+      .then(() => console.log("entire model deleted"))
+      .catch(() => console.log("Failed somewhere"));
   };
 
   async function loadEngine() {
@@ -177,28 +190,29 @@ function App() {
   }
 
   return (
-    <div className="px-4 w-full">
-      <div className="absolute top-0 left-0 p-4 flex items-center gap-2">
+    <div className="w-full px-4">
+      <div className="absolute top-0 left-0 flex items-center gap-2 p-4">
         <div>
           <ResetChatButton resetChat={resetChat} />
         </div>
         <DebugUI loadEngine={loadEngine} progress={progress} />
         <ModelsDropdown resetEngineAndChatHistory={resetEngineAndChatHistory} />
+        <button onClick={printDB}>Print model</button>
       </div>
 
-      <div className="max-w-3xl mx-auto flex flex-col h-screen">
+      <div className="flex flex-col h-screen max-w-3xl mx-auto">
         {chatHistory.length === 0 ? (
-          <div className="flex justify-center items-center h-full flex-col overflow-y-scroll">
+          <div className="flex flex-col items-center justify-center h-full overflow-y-scroll">
             <img
               src="favicon.png"
               alt="Secret Llama"
-              className="mx-auto w-32 rounded-full mb-4 mt-2"
+              className="w-32 mx-auto mt-2 mb-4 rounded-full"
             />
-            <div className="max-w-2xl flex flex-col justify-center ">
-              <h1 className="text-3xl font-medium  mb-8 leading-relaxed text-center">
+            <div className="flex flex-col justify-center max-w-2xl ">
+              <h1 className="mb-8 text-3xl font-medium leading-relaxed text-center">
                 Welcome to Secret Llama
               </h1>
-              <h2 className="text-base mb-4 prose">
+              <h2 className="mb-4 text-base prose">
                 Secret Llama is a free and fully private chatbot. Unlike
                 ChatGPT, the models available here run entirely within your
                 browser which means:
