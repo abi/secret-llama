@@ -55,7 +55,7 @@ function ModelsDropdown({
   }, []);
 
   return (
-    <div className="p-2 text-xs text-center font-bold">
+    <div className="py-2 text-xs font-bold text-center">
       <div className="hidden">
         {Object.values(Model).map((model, index) => (
           <div key={index}>
