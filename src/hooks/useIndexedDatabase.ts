@@ -78,7 +78,16 @@ const deleteItems = (model: Model, dbName: string) => {
   });
 };
 
-export const deleteConfig = (model: Model) =>
-  deleteItems(model, "webllm/config");
-export const deleteModel = (model: Model) => deleteItems(model, "webllm/model");
-export const deleteWASM = (model: Model) => deleteItems(model, "webllm/wasm");
+const deleteConfigDB = (model: Model) => deleteItems(model, "webllm/config");
+const deleteModelDB = (model: Model) => deleteItems(model, "webllm/model");
+const deleteWASMDB = (model: Model) => deleteItems(model, "webllm/wasm");
+
+export const deleteModel = (model: Model) => {
+  return new Promise((resolve, reject) => {
+    deleteConfigDB(model)
+      .then(() => deleteModelDB(model))
+      .then(() => deleteWASMDB(model))
+      .then(resolve)
+      .catch(reject);
+  });
+};

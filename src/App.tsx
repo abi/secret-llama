@@ -6,11 +6,7 @@ import ResetChatButton from "./components/ResetChatButton";
 import DebugUI from "./components/DebugUI";
 import ModelsDropdown from "./components/ModelsDropdown";
 import MessageList from "./components/MessageList";
-import {
-  deleteConfig,
-  deleteModel,
-  deleteWASM,
-} from "./hooks/useIndexedDatabase";
+import { deleteModel } from "./hooks/useIndexedDatabase";
 
 const appConfig = webllm.prebuiltAppConfig;
 appConfig.useIndexedDBCache = true;
@@ -45,12 +41,10 @@ function App() {
     ]);
   };
 
-  const printDB = () => {
-    deleteConfig(selectedModel)
-      .then(() => deleteModel(selectedModel))
-      .then(() => deleteWASM(selectedModel))
-      .then(() => console.log("entire model deleted"))
-      .catch(() => console.log("Failed somewhere"));
+  const deleteSelectedModel = () => {
+    deleteModel(selectedModel)
+      .then(() => console.log("Selected model deleted from IndexedDB"))
+      .catch(() => console.log("Error deleting selected model from IndexedDB"));
   };
 
   async function loadEngine() {
@@ -197,7 +191,7 @@ function App() {
         </div>
         <DebugUI loadEngine={loadEngine} progress={progress} />
         <ModelsDropdown resetEngineAndChatHistory={resetEngineAndChatHistory} />
-        <button onClick={printDB}>Print model</button>
+        <button onClick={deleteSelectedModel}>Print model</button>
       </div>
 
       <div className="flex flex-col h-screen max-w-3xl mx-auto">
